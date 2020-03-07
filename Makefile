@@ -14,20 +14,31 @@ OUT		= bsp.out
 CC	 	= gcc
 
 CFLAGS	= -Ofast -pedantic -Wall -W
+GL_CFLAGS	= -Ofast -pedantic
 
-linuxLFLAGS	= 
+linuxLFLAGS	= -lm -lglut -lGL -lGLU
+macosLFLAGS = -framework OpenGL -framework GLUT -framework Cocoa
 
 define directoryGenerator
-    mkdir -p $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(BIN_DIR)
 endef
 
 all: $(OBJS)
+ifeq ($(OS), Darwin)
+	$(CC) $(OBJS) -o $(BIN_DIR)/$(OUT) $(macosLFLAGS)
+else
 	$(CC) $(OBJS) -o $(BIN_DIR)/$(OUT) $(linuxLFLAGS)
+endif
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(SRC_DIR)/%.h
+ifeq (,$(findstring menu.o, $@))
+	$(CC) -o $@ -c $< $(GL_CFLAGS)
+else
 	$(CC) -o $@ -c $< $(CFLAGS)
+endif
+
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 	$(call directoryGenerator)
