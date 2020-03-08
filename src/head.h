@@ -1,2 +1,5 @@
 #include "menu.h"
 #include "ppm.h"
+#include "point.h"
+#include "segment.h"
+#include "node.h"

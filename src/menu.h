@@ -1,7 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <unistd.h>     
+#include <unistd.h>
 #include <math.h>
 #include "ppm.h"
 
@@ -27,5 +27,9 @@ void Display(void);
 void Reshape(int w, int h);
 
 void menuFunc(int item);
+
+void initWindow(int argc, char **argv);
+
+void startGraphicalLoop();
 
 #endif

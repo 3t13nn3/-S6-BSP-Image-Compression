@@ -21,7 +21,7 @@ void Mouse(int button, int state, int x, int y) {
 	case GLUT_MIDDLE_BUTTON:
 		break;
 	case GLUT_RIGHT_BUTTON:
-		break;    
+		break;	 
 	}
 	glutPostRedisplay();
 }
@@ -33,8 +33,8 @@ int Init(char *s) {
 		fprintf(stderr, "Out of memory\n");
 		return(-1);
 	}
-	if (ImageLoad_PPM(s, image)==-1) 
-	return(-1);
+	if (ImageLoad_PPM(s, image)==-1)
+		return(-1);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_FLAT);
@@ -97,4 +97,29 @@ void menuFunc(int item) {
 	default:
 		break;
 	}
+}
+
+void initWindow(int argc, char **argv) {
+  glutInit(&argc, argv); 
+  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
+  glutInitWindowSize(640,480);  
+  glutInitWindowPosition(100, 100);
+  glutCreateWindow("BSP by E.PENAULT");
+}
+
+void startGraphicalLoop(){
+	glutCreateMenu(menuFunc);
+
+	glutAddMenuEntry("Save", 0);
+	glutAddMenuEntry("Quit", 1);
+	glutAddMenuEntry("Informations", 2);
+	glutAttachMenu(GLUT_LEFT_BUTTON);
+
+	glutDisplayFunc(Display);
+	glutReshapeFunc(Reshape);
+	glutKeyboardFunc(Keyboard);
+	
+	glutMouseFunc(Mouse);
+
+	glutMainLoop();
 }
