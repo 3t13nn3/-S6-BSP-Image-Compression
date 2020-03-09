@@ -1,6 +1,6 @@
 #include "head.h"
 
-Image *image;
+Image* image;
 
 /*Test function, care, cpt argument make 2^cpt nodes*/
 void createTree(Node * n, int cpt) {
@@ -29,12 +29,15 @@ int main(int argc, char **argv) {
 	createTree(root, 2);
 	printAllChildren(0,root);*/
 
-	Subset s = newSubsetFromDimensions(800,600);
-	printSubset(0, &s);
-	Segment ss = getCutFromSubset(&s);
-	printSegment(0, &ss);
-
 	Init(argv[1]);
+
+	/*Subset s = newSubsetFromDimensions(image->sizeX, image->sizeY);
+	printSubset(0, &s);
+
+	Segment ss = getCutFromSubset(&s);
+	printSegment(0, &ss);*/
+
+	CLUT myCLUT = newCLUT();
 
 	startGraphicalLoop();
 

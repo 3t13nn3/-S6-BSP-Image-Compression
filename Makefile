@@ -32,6 +32,7 @@ else
 endif
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(SRC_DIR)/%.h
+	$(call directoryGenerator)
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c

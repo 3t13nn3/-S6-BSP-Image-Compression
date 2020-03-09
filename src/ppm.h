@@ -13,7 +13,6 @@ struct Image {
     GLubyte *data;
 };
 typedef struct Image Image;
-typedef unsigned short utab [3][3][3];
 
 int ImageLoad_PPM(char *filename, Image *image);
 

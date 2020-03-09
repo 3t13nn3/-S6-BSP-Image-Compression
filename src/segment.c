@@ -55,7 +55,7 @@ Segment getCutFromSubset(Subset * sub){
 	T = factor/distA;
 
 	a._x = (1 - T) * sub->_coordinates[0]._x + T * sub->_coordinates[1]._x;
-    a._y = (1 - T) * sub->_coordinates[0]._y + T * sub->_coordinates[1]._y;
+	a._y = (1 - T) * sub->_coordinates[0]._y + T * sub->_coordinates[1]._y;
 
 	Point b;
 	distB = sqrt(pow((sub->_coordinates[3]._x - sub->_coordinates[2]._x), 2) + pow((sub->_coordinates[3]._y - sub->_coordinates[2]._y), 2));
@@ -64,7 +64,7 @@ Segment getCutFromSubset(Subset * sub){
 	T = antifactor/distA;
 
 	b._x = (1 - T) * sub->_coordinates[2]._x + T * sub->_coordinates[3]._x;
-    b._y = (1 - T) * sub->_coordinates[2]._y + T * sub->_coordinates[3]._y;
+	b._y = (1 - T) * sub->_coordinates[2]._y + T * sub->_coordinates[3]._y;
 
 	return newSegmentFromPoints(a,b);
 }
