@@ -2,4 +2,5 @@
 #include "ppm.h"
 #include "point.h"
 #include "segment.h"
+#include "subset.h"
 #include "node.h"

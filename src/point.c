@@ -21,6 +21,6 @@ void printPoint(int nbTabulation, Point* p){
 	for(i=0; i<nbTabulation+1; ++i){
 		printf("\t");
 	}
-	printf("x: %hd | y: %hd\n", p->_x, p->_y);
+	printf("x: %hd | y: %hd", p->_x, p->_y);
 	printf("\n");
 }

@@ -14,7 +14,6 @@ OUT		= bsp.out
 CC	 	= gcc
 
 CFLAGS	= -Ofast -pedantic -Wall -W
-GL_CFLAGS	= -Ofast -pedantic
 
 linuxLFLAGS	= -lm -lglut -lGL -lGLU
 macosLFLAGS = -framework OpenGL -framework GLUT -framework Cocoa
@@ -33,13 +32,7 @@ else
 endif
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(SRC_DIR)/%.h
-#to debug
-ifeq (menu.o,$(findstring menu.o, $@))
-	$(CC) -o $@ -c $< $(GL_CFLAGS)
-else
 	$(CC) -o $@ -c $< $(CFLAGS)
-endif
-
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 	$(call directoryGenerator)

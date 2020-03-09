@@ -2,8 +2,10 @@
 #define SEGMENT_H
 
 #include <stdio.h>
+#include <math.h>
 
 #include "point.h"
+#include "subset.h"
 
 struct segment{
 
@@ -21,5 +23,7 @@ void setSegmentFromPoints(Point p1, Point p2, Segment* s);
 void setSegmentFromCoordinates(short x1, short y1, short x2, short y2, Segment* s);
 
 void printSegment(int nbTabulation, Segment* s);
+
+Segment getCutFromSubset(Subset * sub);
 
 #endif
