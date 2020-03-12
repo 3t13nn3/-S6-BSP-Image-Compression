@@ -5,15 +5,21 @@
 
 #include <GL/gl.h>
 
+#include "ppm.h"
+
 #define SHADE 256
 #define PIXEL_ELEMENTS 3
 
 struct clut{
 
-	GLubyte**** _data;
+	char*** _data;
 };
 typedef struct clut CLUT;
 
 CLUT newCLUT();
+
+void fillCLUTfromImage(CLUT * c, Image * img);
+
+void printCLUT(CLUT * c);
 
 #endif

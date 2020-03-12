@@ -19,9 +19,9 @@ linuxLFLAGS	= -lm -lglut -lGL -lGLU
 macosLFLAGS = -framework OpenGL -framework GLUT -framework Cocoa
 
 define directoryGenerator
-	mkdir -p $(BUILD_DIR)
-	mkdir -p $(OBJ_DIR)
-	mkdir -p $(BIN_DIR)
+	@mkdir -p $(BUILD_DIR) > /dev/null
+	@mkdir -p $(OBJ_DIR) > /dev/null
+	@mkdir -p $(BIN_DIR) > /dev/null
 endef
 
 all: $(OBJS)

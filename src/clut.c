@@ -3,43 +3,44 @@
 CLUT newCLUT(){
 	
 	CLUT toReturn;
-	int i, j, k, l;
+	int i, j;
 
 	/*ALLOCATING*/
-	toReturn._data = malloc((size_t) SHADE * sizeof(GLubyte****));
+	toReturn._data = malloc((size_t) SHADE * sizeof(char***));
 	for(i = 0; i < SHADE; ++i){
 
-		toReturn._data[i] = malloc((size_t) SHADE * sizeof(GLubyte***));
+		toReturn._data[i] = malloc((size_t) SHADE * sizeof(char**));
 
 		for(j = 0; j < SHADE; ++j){
 
-			toReturn._data[i][j] = malloc((size_t) SHADE * sizeof(GLubyte**));
-
-			for(k = 0; k < SHADE; ++k){
-
-				toReturn._data[i][j][k] = malloc((size_t) PIXEL_ELEMENTS * sizeof(GLubyte*));
-				for(l = 0; l < PIXEL_ELEMENTS; ++l){
-
-					toReturn._data[i][j][k][l] = malloc(sizeof(GLubyte));
-				}
-			}
-
-		}
-	}
-
-	/*FILLING*/
-	for(i = 0; i < SHADE; ++i){
-
-		for(j = 0; j < SHADE; ++j){
-
-			for(k = 0; k < SHADE; ++k){
-
-				toReturn._data[i][j][k][0] = (GLubyte)i;
-				toReturn._data[i][j][k][1] = (GLubyte)j;
-				toReturn._data[i][j][k][2] = (GLubyte)k;
-			}
+			toReturn._data[i][j] = malloc((size_t) SHADE * sizeof(char*));
 		}
 	}
 
 	return toReturn;
+}
+
+void fillCLUTfromImage(CLUT * c, Image * img){
+
+	int i;
+	for(i = 0;  i < (int)(3 * img->sizeX * img->sizeY); ++i){
+		if(!c->_data[img->data[i]][img->data[i+1]][img->data[i+2]]){
+			c->_data[img->data[i]][img->data[i+1]][img->data[i+2]] = 1;
+		}
+	}
+}
+
+void printCLUT(CLUT * c){
+
+	int i, j, k;
+	for(i = 0; i < SHADE; ++i){
+
+		for(j = 0; j < SHADE; ++j){
+
+			for(k = 0; k < SHADE; ++k){
+				if(c->_data[i][j][k])
+					printf("%d,%d,%d %d\n", i, j, k, c->_data[i][j][k]);
+			}
+		}
+	}
 }
