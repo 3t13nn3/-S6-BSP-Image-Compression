@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include "point.h"
 #include "subset.h"
