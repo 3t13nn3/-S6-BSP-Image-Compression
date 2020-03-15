@@ -6,9 +6,9 @@ Image* image;
 void createTree(Node * n, int cpt) {
 	if(cpt == 0 || cpt > 20)
 		return;
-	addLeftNode(newSegmentFromPoints(newPoint(-cpt,-cpt),newPoint(-cpt,-cpt)),newSubsetFromDimensions(-cpt,-cpt),n);
+	addLeftNode(newSegmentFromPoints(newPoint(-cpt,-cpt,-cpt*2),newPoint(-cpt,-cpt,-cpt*2)),newSubsetFromDimensions(-cpt,-cpt,-cpt*2),n);
 		createTree(n->_leftChild,cpt-1);
-	addRightNode(newSegmentFromPoints(newPoint(cpt,cpt),newPoint(cpt,cpt)),newSubsetFromDimensions(cpt,cpt),n);
+	addRightNode(newSegmentFromPoints(newPoint(cpt,cpt,cpt*2),newPoint(cpt,cpt,cpt*2)),newSubsetFromDimensions(cpt,cpt,cpt*2),n);
 		createTree(n->_rightChild,cpt-1);
 }
 
@@ -22,12 +22,12 @@ int main(int argc, char **argv) {
 	initWindow(argc, argv);
 
 
-	/*Segment seg = newSegmentFromPoints(newPoint(0,0),newPoint(0,0));
-	Subset sub = newSubsetFromDimensions(0,0);
+	Segment seg = newSegmentFromPoints(newPoint(0,0,0),newPoint(0,0,0));
+	Subset sub = newSubsetFromDimensions(360,256,256);
 	Node* root = newNode(seg, sub);
 
 	createTree(root, 2);
-	printAllChildren(0,root);*/
+	printAllChildren(0,root);
 	int h,s,v;
 	int r,g,b;
 

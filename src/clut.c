@@ -1,19 +1,19 @@
 #include "clut.h"
-#include <stdio.h>
+
 CLUT newCLUT(){
 	
 	CLUT toReturn;
 	int i, j;
 
 	/*ALLOCATING*/
-	toReturn._data = malloc((size_t) SHADE * sizeof(char***));
-	for(i = 0; i < SHADE; ++i){
+	toReturn._data = malloc((size_t) H * sizeof(char***));
+	for(i = 0; i < H; ++i){
 
-		toReturn._data[i] = malloc((size_t) SHADE * sizeof(char**));
+		toReturn._data[i] = malloc((size_t) S * sizeof(char**));
 
-		for(j = 0; j < SHADE; ++j){
+		for(j = 0; j < S; ++j){
 
-			toReturn._data[i][j] = malloc((size_t) SHADE * sizeof(char*));
+			toReturn._data[i][j] = malloc((size_t) V * sizeof(char*));
 		}
 	}
 
@@ -24,6 +24,8 @@ void fillCLUTfromImage(CLUT * c, Image * img){
 
 	int i;
 	for(i = 0;  i < (int)(3 * img->sizeX * img->sizeY); ++i){
+		//Very usefull test, considfrable gain of speed by checking if this color is already affected
+		//Affecting a variable as a higher cost than a simple test, we don't want to reafect a variable
 		if(!c->_data[img->data[i]][img->data[i+1]][img->data[i+2]]){
 			c->_data[img->data[i]][img->data[i+1]][img->data[i+2]] = 1;
 		}
@@ -33,11 +35,11 @@ void fillCLUTfromImage(CLUT * c, Image * img){
 void printCLUT(CLUT * c){
 
 	int i, j, k;
-	for(i = 0; i < SHADE; ++i){
+	for(i = 0; i < H; ++i){
 
-		for(j = 0; j < SHADE; ++j){
+		for(j = 0; j < S; ++j){
 
-			for(k = 0; k < SHADE; ++k){
+			for(k = 0; k < V; ++k){
 				if(c->_data[i][j][k])
 					printf("%d,%d,%d %d\n", i, j, k, c->_data[i][j][k]);
 			}

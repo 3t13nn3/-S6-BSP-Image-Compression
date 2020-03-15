@@ -8,8 +8,9 @@
 
 #include "ppm.h"
 
-#define SHADE 256
-#define PIXEL_ELEMENTS 3
+#define H 360
+#define S 256
+#define V 256
 
 struct clut{
 

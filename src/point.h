@@ -7,12 +7,13 @@ struct point{
 
 	short _x;
 	short _y;
+	short _z;
 };
 typedef struct point Point;
 
-Point newPoint(short x, short y);
+Point newPoint(short x, short y, short z);
 
-void setPoint(short x, short y, Point* p);
+void setPoint(short x, short y, short z, Point* p);
 
 void printPoint(int nbTabulation, Point* p);
 

@@ -17,11 +17,11 @@ typedef struct segment Segment;
 
 Segment newSegmentFromPoints(Point p1, Point p2);
 
-Segment newSegmentFromCoordinates(short x1, short y1, short x2, short y2);
+Segment newSegmentFromCoordinates(short x1, short y1, short z1, short x2, short y2, short z2);
 
 void setSegmentFromPoints(Point p1, Point p2, Segment* s);
 
-void setSegmentFromCoordinates(short x1, short y1, short x2, short y2, Segment* s);
+void setSegmentFromCoordinates(short x1, short y1, short z1, short x2, short y2, short z2, Segment* s);
 
 void printSegment(int nbTabulation, Segment* s);
 
