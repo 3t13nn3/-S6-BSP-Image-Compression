@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <time.h>
 
 #include "point.h"
 #include "subset.h"
@@ -24,7 +23,5 @@ void setSegmentFromPoints(Point p1, Point p2, Segment* s);
 void setSegmentFromCoordinates(short x1, short y1, short z1, short x2, short y2, short z2, Segment* s);
 
 void printSegment(int nbTabulation, Segment* s);
-
-Segment getCutFromSubset(Subset * sub);
 
 #endif

@@ -40,31 +40,3 @@ void printSegment(int nbTabulation, Segment* s) {
 	printPoint(1,&s->_p2);
 	printf("\n");
 }
-
-Segment getCutFromSubset(Subset * sub) {
-
-	/*Here, we are randomly generating points for the cut segment*/
-	srand(time(NULL));
-	float factor, antifactor, distA, distB, T;
-	
-
-	Point a;
-	distA = sqrt(pow((sub->_coordinates[1]._x - sub->_coordinates[0]._x), 2) + pow((sub->_coordinates[1]._y - sub->_coordinates[0]._y), 2));
-	factor = rand()%(int)(distA+1);
-
-	T = factor/distA;
-
-	a._x = (1 - T) * sub->_coordinates[0]._x + T * sub->_coordinates[1]._x;
-	a._y = (1 - T) * sub->_coordinates[0]._y + T * sub->_coordinates[1]._y;
-
-	Point b;
-	distB = sqrt(pow((sub->_coordinates[3]._x - sub->_coordinates[2]._x), 2) + pow((sub->_coordinates[3]._y - sub->_coordinates[2]._y), 2));
-	antifactor = ((distA - factor) / distB) * distA;
-
-	T = antifactor/distA;
-
-	b._x = (1 - T) * sub->_coordinates[2]._x + T * sub->_coordinates[3]._x;
-	b._y = (1 - T) * sub->_coordinates[2]._y + T * sub->_coordinates[3]._y;
-
-	return newSegmentFromPoints(a,b);
-}

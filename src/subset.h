@@ -15,14 +15,14 @@ typedef struct subset Subset;
 
 /*
 Subset representation:
-   5--------6
-  /|       /|
- / |      / |
-1--------2  |
-|  7-----|--8
-| /      | /
-|/       |/
-3--------4
+        ^  5--------------6
+        Z /|             /|
+         / |    X>      / |
+        1--------------2  |
+        |  7-----------|--8
+      Y | /            | /
+     \/ |/             |/
+        3--------------4
 
 ------------->                   1              2               3              4               5               6                7               8        */
 Subset newSubsetFromPoints(Point topLeft, Point topRight, Point botLeft, Point botRight, Point topZLeft, Point topZRight, Point botZLeft, Point botZRight);

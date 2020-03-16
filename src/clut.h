@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <assert.h>
 
 #include <GL/gl.h>
 
@@ -23,6 +24,8 @@ CLUT newCLUT();
 void fillCLUTfromImage(CLUT * c, Image * img);
 
 void printCLUT(CLUT * c);
+
+void freeCLUT(CLUT * c);
 
 void rgb2hsv(int r, int g, int b, int* h, int* s, int* v);
 

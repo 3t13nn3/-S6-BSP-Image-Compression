@@ -6,14 +6,17 @@ CLUT newCLUT(){
 	int i, j;
 
 	/*ALLOCATING*/
-	toReturn._data = malloc((size_t) H * sizeof(char***));
+	toReturn._data = (char***)malloc(H * sizeof(char**));
+	assert(toReturn._data);
 	for(i = 0; i < H; ++i){
 
-		toReturn._data[i] = malloc((size_t) S * sizeof(char**));
+		toReturn._data[i] = (char**)malloc(S * sizeof(char*));
+		assert(toReturn._data[i]);
 
 		for(j = 0; j < S; ++j){
 
-			toReturn._data[i][j] = malloc((size_t) V * sizeof(char*));
+			toReturn._data[i][j] = (char*)malloc(V * sizeof(char));
+			assert(toReturn._data[i][j]);
 		}
 	}
 
@@ -45,6 +48,22 @@ void printCLUT(CLUT * c){
 			}
 		}
 	}
+}
+
+//to debug i guess
+void freeCLUT(CLUT * c){
+
+	int i,j;
+	
+    for(i = 0; i < H; i++){
+        for(j = 0; j < S; j++){
+			printf("j! %d\n", j);
+            free(c->_data[i][j]);
+        }
+		printf("i! %d\n", i);
+        free(c->_data[i]);
+    }
+    free(c->_data);
 }
 
 void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
