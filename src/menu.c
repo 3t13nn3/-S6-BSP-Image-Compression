@@ -26,7 +26,7 @@ void Mouse(int button, int state, int x, int y) {
 	glutPostRedisplay();
 }
 
-int Init(char *s, CLUT * c) {
+int Init(char *s) {
 
 	image = (Image *) malloc(sizeof(Image));
 	if (image == NULL) {
@@ -36,8 +36,7 @@ int Init(char *s, CLUT * c) {
 	if (ImageLoad_PPM(s, image)==-1)
 		return(-1);
 	
-	fillCLUTfromImage(c,image);
-
+	fillCLUTfromImage(&myCLUT,image);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_FLAT);
@@ -91,6 +90,7 @@ void menuFunc(int item) {
 		break;
 	case 1:
 		free(image);
+		freeCLUT(&myCLUT);
 		exit(0);
 		break;
 	case 2:

@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "segment.h"
+#include "cut.h"
 #include "subset.h"
+#include "clut.h"
 
 typedef struct node Node;
 struct node{
@@ -13,17 +14,23 @@ struct node{
 	Node* _leftChild;
 	Node* _rightChild;
 	Subset _subset;
-	Segment _segment;
-	int _previousCutAxe;
+	Cut _cut;
+	int _cutAxe;
 };
 
 
-Node* newNode(Segment seg, Subset sub, int previousCutAxe);
+Node* newNode(Cut cut, Subset sub, int cutAxe);
 
-void addLeftNode(Segment seg, Subset sub, Node* father, int previousCutAxe);
+void addLeftNode(Cut cut, Subset sub, Node* father, int cutAxe);
 
-void addRightNode(Segment seg, Subset sub, Node* father, int previousCutAxe);
+void addRightNode(Cut cut, Subset sub, Node* father, int cutAxe);
 
 void printAllChildren(int indentation, Node* n);
+
+void freeAllChildren(Node* n);
+
+void createTree(Node * n, int cpt);
+
+void modifyCLUTFromTree(CLUT * c, Node * tree);
 
 #endif

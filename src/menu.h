@@ -13,14 +13,15 @@
 #define ESCAPE 27
 #define Q 113
 
-//Accessing to our main image from here
+//Accessing to our main image & CLUT from here
 extern Image *image;
+extern CLUT myCLUT;
 
 void Keyboard(unsigned char key, int x, int y);
 
 void Mouse(int button, int state, int x, int y);
 
-int Init(char *s, CLUT * c);
+int Init(char *s);
 
 int ReInit();
 

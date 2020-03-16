@@ -22,7 +22,7 @@ typedef struct cut Cut;
 
 Cut newCutFromPoints(Point a, Point b, Point c, Point d);
 
-Cut getCutFromSubset(Subset * sub, int previousCutAxe);
+Cut getCutFromSubset(Subset * sub, int cutAxe);
 
 void printCut(int indentation, Cut * c);
 

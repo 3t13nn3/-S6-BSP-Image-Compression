@@ -26,11 +26,19 @@ CLUT newCLUT(){
 void fillCLUTfromImage(CLUT * c, Image * img){
 
 	int i;
+	int h = 0;
+	int s = 0;
+	int v = 0;
 	for(i = 0;  i < (int)(3 * img->sizeX * img->sizeY); ++i){
-		//Very usefull test, considfrable gain of speed by checking if this color is already affected
+
+		//converting RGB (image pixel) to HSV for our CLUT format
+		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
+
+		//printf("%d,%d,%d\n",img->data[i], img->data[i+1], img->data[i+2]);
+		//printf("--->%d,%d,%d\n", h,s,v);
 		//Affecting a variable as a higher cost than a simple test, we don't want to reafect a variable
-		if(!c->_data[img->data[i]][img->data[i+1]][img->data[i+2]]){
-			c->_data[img->data[i]][img->data[i+1]][img->data[i+2]] = 1;
+		if(!c->_data[h][s][v]){
+			c->_data[h][s][v] = 1;
 		}
 	}
 }
@@ -56,13 +64,15 @@ void freeCLUT(CLUT * c){
 	int i,j;
 	
     for(i = 0; i < H; i++){
+
         for(j = 0; j < S; j++){
-			printf("j! %d\n", j);
+
             free(c->_data[i][j]);
         }
-		printf("i! %d\n", i);
+
         free(c->_data[i]);
     }
+
     free(c->_data);
 }
 
@@ -78,7 +88,7 @@ void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
 
 	double delta = max - min;
 	//value
-	*v = floor(max);
+	*v = max;
 	//printf("r %d  g %d  b %d delat %f\n", r, g, b, delta);
 
 	//Test delta first because delta will be used in division and we don't want to divide by 0
@@ -89,23 +99,26 @@ void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
 	}
 
 	//Hue Calculation
-	if(r == max)
-		*h = floor((g - b)/delta) * 60;
+	if(r == max){
+		*h = ((g - b)/delta) * 60;
+	}
 	else if(g == max)
-		*h = floor(((b - r)/delta)+2) * 60;
+		*h = (((b - r)/delta)+2) * 60;
 	else
-		*h = floor(((r - g)/delta)+4) * 60;
+		*h = (((r - g)/delta)+4) * 60;
 
 
 	//Saturation calculation
 	if(max == 0){
 		*s = 0;
 	} else {
-		*s = floor(delta*256/max);
+		*s = delta*255/max;
 	}
-	//printf("r %d  g %d  b %d \n", r, g, b);
 
-	//printf("h %d  s %d  v %d \n", *h, *s ,*v);
+	//angle couldn't be negativ, then add a complete round in degree
+	if(*h < 0)
+		*h+=360;
+
 }
 
 void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
@@ -159,7 +172,7 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 
 	}
 
-	*r = (rt+m)*256;
-	*g = (gt+m)*256;
-	*b = (bt+m)*256;
+	*r = (rt+m)*255;
+	*g = (gt+m)*255;
+	*b = (bt+m)*255;
 }

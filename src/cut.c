@@ -24,7 +24,7 @@ Subset representation:
      \/ |/             |/
         3--------------4   
 */
-Cut getCutFromSubset(Subset * sub, int previousCutAxe) {
+Cut getCutFromSubset(Subset * sub, int cutAxe) {
     
     //must affect them to avoid warnings --'
 	Point a = newPoint(0,0,0);
@@ -37,9 +37,7 @@ Cut getCutFromSubset(Subset * sub, int previousCutAxe) {
     //we are using totalDistance/2 as newPointDiscance value because we are cutting our space by half, but we could addapt it for the portion we want
     float totalDistance, newPointDistance, T;
 
-	int actualCutAxe = (previousCutAxe+1)%AXES_NB; //Never taking the same axe as previous
-
-	switch (actualCutAxe){
+	switch (cutAxe){
     case X_AXE:
 
         totalDistance = sub->_coordinates[1]._x - sub->_coordinates[0]._x;
