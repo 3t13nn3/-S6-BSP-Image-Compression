@@ -3,20 +3,26 @@
 CLUT newCLUT(){
 	
 	CLUT toReturn;
-	int i, j;
+	int i, j, k;
 
 	/*ALLOCATING*/
-	toReturn._data = (char***)malloc(H * sizeof(char**));
+	toReturn._data = (short****)malloc(H * sizeof(short***));
 	assert(toReturn._data);
 	for(i = 0; i < H; ++i){
 
-		toReturn._data[i] = (char**)malloc(S * sizeof(char*));
+		toReturn._data[i] = (short***)malloc(S * sizeof(short**));
 		assert(toReturn._data[i]);
 
 		for(j = 0; j < S; ++j){
 
-			toReturn._data[i][j] = (char*)malloc(V * sizeof(char));
+			toReturn._data[i][j] = (short**)malloc(V * sizeof(short*));
 			assert(toReturn._data[i][j]);
+
+			for(k = 0; k < V; ++k){
+
+				toReturn._data[i][j][k] = (short*)malloc(NB_COMPONENT * sizeof(short));
+				assert(toReturn._data[i][j][k]);
+			}
 		}
 	}
 
@@ -37,8 +43,10 @@ void fillCLUTfromImage(CLUT * c, Image * img){
 		//printf("%d,%d,%d\n",img->data[i], img->data[i+1], img->data[i+2]);
 		//printf("--->%d,%d,%d\n", h,s,v);
 		//Affecting a variable as a higher cost than a simple test, we don't want to reafect a variable
-		if(!c->_data[h][s][v]){
-			c->_data[h][s][v] = 1;
+		if(!c->_data[h][s][v][0]){
+			c->_data[h][s][v][0] = h;
+			c->_data[h][s][v][1] = s;
+			c->_data[h][s][v][2] = v;
 		}
 	}
 }
@@ -51,8 +59,9 @@ void printCLUT(CLUT * c){
 		for(j = 0; j < S; ++j){
 
 			for(k = 0; k < V; ++k){
-				if(c->_data[i][j][k])
-					printf("%d,%d,%d %d\n", i, j, k, c->_data[i][j][k]);
+				if(c->_data[i][j][k][0]){
+					printf("%d,%d,%d -> %d, %d, %d\n", i, j, k, c->_data[i][j][k][0], c->_data[i][j][k][1], c->_data[i][j][k][2]);
+				}
 			}
 		}
 	}
@@ -61,11 +70,16 @@ void printCLUT(CLUT * c){
 //to debug i guess
 void freeCLUT(CLUT * c){
 
-	int i,j;
+	int i, j, k;
 	
     for(i = 0; i < H; i++){
 
         for(j = 0; j < S; j++){
+
+			for(k = 0; k < V; k++){
+
+           		free(c->_data[i][j][k]);
+        	}
 
             free(c->_data[i][j]);
         }

@@ -17,17 +17,15 @@ int main(int argc, char **argv) {
 	Node* root = newNode(myc, sub, X_AXE);
 
 	createTree(root, 9);
-	printAllChildren(0,root);
-	freeAllChildren(root);
+	//printAllChildren(0,root);
+	//freeAllChildren(root);
 
 	myCLUT = newCLUT();
 	Init(argv[1]);
-
-	//
-
-	//printCut(1, &myc);
 	
-	//printCLUT(&myCLUT);
+	modifyCLUTFromTree(&myCLUT, root);
+
+	printCLUT(&myCLUT);
 
 	/*Subset s = newSubsetFromDimensions(image->sizeX, image->sizeY);
 	printSubset(0, &s);

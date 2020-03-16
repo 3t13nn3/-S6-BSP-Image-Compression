@@ -13,9 +13,11 @@
 #define S 256
 #define V 256
 
+#define NB_COMPONENT 3
+
 struct clut{
 
-	char*** _data;
+	short**** _data;
 };
 typedef struct clut CLUT;
 

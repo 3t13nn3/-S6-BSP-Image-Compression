@@ -120,6 +120,7 @@ void createTree(Node * n, int cpt) {
 }
 
 void modifyCLUTFromTree(CLUT * c, Node * tree){
+	
 	if(tree->_leftChild != NULL){
 		modifyCLUTFromTree(c, tree->_leftChild);
 	}
@@ -128,13 +129,23 @@ void modifyCLUTFromTree(CLUT * c, Node * tree){
 		modifyCLUTFromTree(c, tree->_rightChild);
 	}
 
-	if(tree->_leftChild != NULL && tree->_rightChild != NULL) { //leaf -> subset
+	if(tree->_leftChild == NULL && tree->_rightChild == NULL) { //leaf -> subset
+
+		/*Calculus for the average of all components of the subset*/
 		int i, j, k;
 		long long int hAverage = 0, sAverage = 0, vAverage = 0;
-		for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[0]._x; ++i){
-			for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[0]._y; ++j){
-				for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[0]._z; ++k){
-					if(c->_data[i][j][k]){
+		long long int nbIterations = ((tree->_subset._coordinates[7]._x - tree->_subset._coordinates[0]._x) 
+		                            * (tree->_subset._coordinates[7]._y - tree->_subset._coordinates[0]._y)
+									* (tree->_subset._coordinates[7]._z - tree->_subset._coordinates[0]._z));
+
+		for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
+
+			for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
+
+				for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
+
+					if(c->_data[i][j][k][0]){
+
 						hAverage+= i;
 						sAverage+= j;
 						vAverage+= k;
@@ -142,6 +153,26 @@ void modifyCLUTFromTree(CLUT * c, Node * tree){
 				}
 			}
 		}
-	}
 
+		hAverage/=nbIterations;
+		sAverage/=nbIterations;
+		vAverage/=nbIterations;
+
+		/*Assignation of the subset average component for every components of the subset*/
+		for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
+
+			for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
+
+				for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
+
+					if(c->_data[i][j][k][0]){
+
+						c->_data[i][j][k][0] = hAverage;
+						c->_data[i][j][k][1] = sAverage;
+						c->_data[i][j][k][2] = vAverage;
+					}
+				}
+			}
+		}
+	}
 }
