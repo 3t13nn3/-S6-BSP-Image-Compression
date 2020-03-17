@@ -3,9 +3,15 @@
 void Keyboard(unsigned char key, int x, int y) {
 	switch(key){
 	case ESCAPE:
+		free(image);
+		freeCLUT(&myCLUT);
+		freeAllChildren(root);
 		exit(1);
 		break;
 	case Q:
+		free(image);
+		freeCLUT(&myCLUT);
+		freeAllChildren(root);
 		exit(1);
 		break;
 	default:
@@ -35,8 +41,7 @@ int Init(char *s) {
 	}
 	if (ImageLoad_PPM(s, image)==-1)
 		return(-1);
-	
-	fillCLUTfromImage(&myCLUT,image);
+
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_FLAT);
@@ -89,12 +94,15 @@ void menuFunc(int item) {
 		imagesave_PPM(s, image);
 		break;
 	case 1:
-		free(image);
-		freeCLUT(&myCLUT);
-		exit(0);
+		*image = newImageFromCLUT(&myCLUT, image);
 		break;
 	case 2:
-		case 6:
+		free(image);
+		freeCLUT(&myCLUT);
+		freeAllChildren(root);
+		exit(0);
+		break;
+	case 3:
 		printf("Taille de l image : %d %d\n", (int) image->sizeX, (int) image->sizeY);
 		break;
 	default:
@@ -114,8 +122,9 @@ void startGraphicalLoop(){
 	glutCreateMenu(menuFunc);
 
 	glutAddMenuEntry("Save", 0);
-	glutAddMenuEntry("Quit", 1);
-	glutAddMenuEntry("Informations", 2);
+	glutAddMenuEntry("New", 1);
+	glutAddMenuEntry("Quit", 2);
+	glutAddMenuEntry("Informations", 3);
 	glutAttachMenu(GLUT_LEFT_BUTTON);
 
 	glutDisplayFunc(Display);

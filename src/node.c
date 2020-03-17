@@ -66,7 +66,7 @@ void freeAllChildren(Node* n){
 
 /*Test function, care, cpt argument make 2^cpt nodes*/
 void createTree(Node * n, int cpt) {
-	if(cpt == 0 || cpt > 10)
+	if(cpt == 0 || cpt > 40)
 		return;
 
 	//SPLIT SUBSET BY THE CUT
@@ -167,9 +167,9 @@ void modifyCLUTFromTree(CLUT * c, Node * tree){
 
 					if(c->_data[i][j][k][0]){
 
-						c->_data[i][j][k][0] = hAverage;
-						c->_data[i][j][k][1] = sAverage;
-						c->_data[i][j][k][2] = vAverage;
+						c->_data[i][j][k][0] = (short)hAverage;
+						c->_data[i][j][k][1] = (short)sAverage;
+						c->_data[i][j][k][2] = (short)vAverage;
 					}
 				}
 			}

@@ -190,3 +190,23 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 	*g = (gt+m)*255;
 	*b = (bt+m)*255;
 }
+
+Image newImageFromCLUT(CLUT * c, Image * img){
+
+	int i, h = 0, s = 0, v = 0, r = 0, g = 0, b = 0;
+	int size = img->sizeX * img->sizeY * 3;
+	Image new = *img;
+
+	for(i = 0; i< size; i+=3){
+
+		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
+		//printf("%d %d %d\n", c->_data[h][s][v][0],c->_data[h][s][v][1],c->_data[h][s][v][2]);
+		hsv2rgb(c->_data[h][s][v][0], c->_data[h][s][v][1], c->_data[h][s][v][2], &r, &g, &b);
+		//printf("----->%d %d %d\n", r, g, b);
+		new.data[i] = (GLubyte)r;
+		new.data[i+1] = (GLubyte)g;
+		new.data[i+1] = (GLubyte)b;
+		
+	}
+	return new;
+}

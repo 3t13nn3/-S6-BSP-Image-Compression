@@ -112,6 +112,10 @@ void imagesave_PPM(char *filename, Image *img)
     fprintf(fp, "%d\n",RGB_COMPONENT_COLOR);
 
     // pixel data
-    fwrite(img->data, (size_t) 1, (size_t) (3 * img->sizeX * img->sizeY), fp);
+    int cpt = img->sizeY - 1;
+    while(cpt >= 0){
+        fwrite(&img->data[cpt * 3 * img->sizeX], (size_t) 1, (size_t) (3 * img->sizeX), fp);
+        --cpt;
+    }
     fclose(fp);
 }

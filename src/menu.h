@@ -8,14 +8,20 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 
+#include "subset.h"
+#include "node.h"
 #include "clut.h"
+#include "cut.h"
 
 #define ESCAPE 27
 #define Q 113
 
 //Accessing to our main image & CLUT from here
 extern Image *image;
+extern Image new;
 extern CLUT myCLUT;
+extern Node* root;
+
 
 void Keyboard(unsigned char key, int x, int y);
 

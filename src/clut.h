@@ -33,4 +33,6 @@ void rgb2hsv(int r, int g, int b, int* h, int* s, int* v);
 
 void hsv2rgb(int h, double s, double v, int* r, int* g, int* b);
 
+Image newImageFromCLUT(CLUT * c, Image * img);
+
 #endif

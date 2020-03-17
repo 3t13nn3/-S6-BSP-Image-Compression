@@ -1,12 +1,14 @@
 #include "head.h"
 
 Image* image;
+Image new;
 CLUT myCLUT;
+Node* root;
 
 int main(int argc, char **argv) {
 
-	if (argc<2) {
-		fprintf(stderr, "Usage : ./bsp myImage.ppm\n");
+	if (argc<3) {
+		fprintf(stderr, "Usage : ./bsp myImage.ppm treeDepth\n");
 		exit(0);
 	}
 
@@ -14,24 +16,17 @@ int main(int argc, char **argv) {
 
 	Subset sub = newSubsetFromDimensions(360,256,256);
 	Cut myc = getCutFromSubset(&sub, X_AXE);
-	Node* root = newNode(myc, sub, X_AXE);
+	root = newNode(myc, sub, X_AXE);
 
-	createTree(root, 9);
+	createTree(root, atoi(argv[2]));
 	//printAllChildren(0,root);
-	//freeAllChildren(root);
 
 	myCLUT = newCLUT();
+
 	Init(argv[1]);
-	
+
+	fillCLUTfromImage(&myCLUT,image);
 	modifyCLUTFromTree(&myCLUT, root);
-
-	printCLUT(&myCLUT);
-
-	/*Subset s = newSubsetFromDimensions(image->sizeX, image->sizeY);
-	printSubset(0, &s);
-
-	Segment ss = getCutFromSubset(&s);
-	printSegment(0, &ss);*/
 
 	startGraphicalLoop();
 
