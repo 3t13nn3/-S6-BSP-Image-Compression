@@ -1,4 +1,4 @@
-#include "point.h"
+#include "head.h"
 
 Point newPoint(short x, short y, short z){
 

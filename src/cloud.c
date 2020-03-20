@@ -1,35 +1,6 @@
-#include "clut.h"
+#include "head.h"
 
-CLUT newCLUT(){
-	
-	CLUT toReturn;
-	int i, j, k;
-
-	/*ALLOCATING*/
-	toReturn._data = (short****)malloc(H * sizeof(short***));
-	assert(toReturn._data);
-	for(i = 0; i < H; ++i){
-
-		toReturn._data[i] = (short***)malloc(S * sizeof(short**));
-		assert(toReturn._data[i]);
-
-		for(j = 0; j < S; ++j){
-
-			toReturn._data[i][j] = (short**)malloc(V * sizeof(short*));
-			assert(toReturn._data[i][j]);
-
-			for(k = 0; k < V; ++k){
-
-				toReturn._data[i][j][k] = (short*)malloc(NB_COMPONENT * sizeof(short));
-				assert(toReturn._data[i][j][k]);
-			}
-		}
-	}
-
-	return toReturn;
-}
-
-void fillCLUTfromImage(CLUT * c, Image * img){
+void fillCloudfromImage(Cloud * c, Image * img){
 
 	int i;
 	int h = 0;
@@ -37,7 +8,7 @@ void fillCLUTfromImage(CLUT * c, Image * img){
 	int v = 0;
 	for(i = 0;  i < (int)(3 * img->sizeX * img->sizeY); ++i){
 
-		//converting RGB (image pixel) to HSV for our CLUT format
+		//converting RGB (image pixel) to HSV for our Cloud format
 		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
 
 		//printf("%d,%d,%d\n",img->data[i], img->data[i+1], img->data[i+2]);
@@ -51,7 +22,7 @@ void fillCLUTfromImage(CLUT * c, Image * img){
 	}
 }
 
-void printCLUT(CLUT * c){
+void printCloud(Cloud * c){
 
 	int i, j, k;
 	for(i = 0; i < H; ++i){
@@ -67,28 +38,6 @@ void printCLUT(CLUT * c){
 	}
 }
 
-//to debug i guess
-void freeCLUT(CLUT * c){
-
-	int i, j, k;
-	
-    for(i = 0; i < H; i++){
-
-        for(j = 0; j < S; j++){
-
-			for(k = 0; k < V; k++){
-
-           		free(c->_data[i][j][k]);
-        	}
-
-            free(c->_data[i][j]);
-        }
-
-        free(c->_data[i]);
-    }
-
-    free(c->_data);
-}
 
 void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
 
@@ -191,7 +140,7 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 	*b = (bt+m)*255;
 }
 
-Image newImageFromCLUT(CLUT * c, Image * img){
+Image newImageFromCloud(Cloud * c, Image * img){
 
 	int i, h = 0, s = 0, v = 0, r = 0, g = 0, b = 0;
 	int size = img->sizeX * img->sizeY * 3;
@@ -205,7 +154,7 @@ Image newImageFromCLUT(CLUT * c, Image * img){
 		//printf("----->%d %d %d\n", r, g, b);
 		new.data[i] = (GLubyte)r;
 		new.data[i+1] = (GLubyte)g;
-		new.data[i+1] = (GLubyte)b;
+		new.data[i+2] = (GLubyte)b;
 		
 	}
 	return new;

@@ -1,4 +1,4 @@
-#include "cut.h"
+#include "head.h"
 
 Cut newCutFromPoints(Point a, Point b, Point c, Point d){
 

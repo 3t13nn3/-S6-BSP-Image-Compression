@@ -1,4 +1,4 @@
-#include "ppm.h"
+#include "head.h"
 
 #define CREATOR "JJ"
 #define RGB_COMPONENT_COLOR 255

@@ -1,16 +1,14 @@
-#include "menu.h"
+#include "head.h"
 
 void Keyboard(unsigned char key, int x, int y) {
 	switch(key){
 	case ESCAPE:
 		free(image);
-		freeCLUT(&myCLUT);
 		freeAllChildren(root);
 		exit(1);
 		break;
 	case Q:
 		free(image);
-		freeCLUT(&myCLUT);
 		freeAllChildren(root);
 		exit(1);
 		break;
@@ -94,11 +92,10 @@ void menuFunc(int item) {
 		imagesave_PPM(s, image);
 		break;
 	case 1:
-		*image = newImageFromCLUT(&myCLUT, image);
+		*image = newImageFromCloud(&myCloud, image);
 		break;
 	case 2:
 		free(image);
-		freeCLUT(&myCLUT);
 		freeAllChildren(root);
 		exit(0);
 		break;

@@ -2,7 +2,7 @@
 
 Image* image;
 Image new;
-CLUT myCLUT;
+Cloud myCloud;
 Node* root;
 
 int main(int argc, char **argv) {
@@ -16,17 +16,14 @@ int main(int argc, char **argv) {
 
 	Subset sub = newSubsetFromDimensions(360,256,256);
 	Cut myc = getCutFromSubset(&sub, X_AXE);
-	root = newNode(myc, sub, X_AXE);
+	root = newNode(sub);
 
-	createTree(root, atoi(argv[2]));
-	//printAllChildren(0,root);
-
-	myCLUT = newCLUT();
+	createTree(root, atoi(argv[2]), myc, X_AXE);
 
 	Init(argv[1]);
 
-	fillCLUTfromImage(&myCLUT,image);
-	modifyCLUTFromTree(&myCLUT, root);
+	fillCloudfromImage(&myCloud,image);
+	modifyCloudFromTree(&myCloud, root);
 
 	startGraphicalLoop();
 

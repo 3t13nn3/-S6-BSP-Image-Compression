@@ -1,4 +1,4 @@
-#include "subset.h"
+#include "head.h"
 
 Subset newSubsetFromPoints(Point topLeft, Point topRight, Point botLeft, Point botRight, Point topZLeft, Point topZRight, Point botZLeft, Point botZRight) {
 
