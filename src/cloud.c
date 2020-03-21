@@ -11,14 +11,12 @@ void fillCloudfromImage(Cloud * c, Image * img){
 		//converting RGB (image pixel) to HSV for our Cloud format
 		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
 
-		//printf("%d,%d,%d\n",img->data[i], img->data[i+1], img->data[i+2]);
-		//printf("--->%d,%d,%d\n", h,s,v);
 		//Affecting a variable as a higher cost than a simple test, we don't want to reafect a variable
-		if(!c->_data[h][s][v][0]){
+		//if(c->_data[h][s][v] == NULL){
 			c->_data[h][s][v][0] = h;
 			c->_data[h][s][v][1] = s;
 			c->_data[h][s][v][2] = v;
-		}
+		//}
 	}
 }
 
@@ -30,7 +28,7 @@ void printCloud(Cloud * c){
 		for(j = 0; j < S; ++j){
 
 			for(k = 0; k < V; ++k){
-				if(c->_data[i][j][k][0]){
+				if(c->_data[i][j][k] != NULL){
 					printf("%d,%d,%d -> %d, %d, %d\n", i, j, k, c->_data[i][j][k][0], c->_data[i][j][k][1], c->_data[i][j][k][2]);
 				}
 			}
@@ -143,8 +141,11 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 Image newImageFromCloud(Cloud * c, Image * img){
 
 	int i, h = 0, s = 0, v = 0, r = 0, g = 0, b = 0;
-	int size = img->sizeX * img->sizeY * 3;
-	Image new = *img;
+	Image new;
+	new.sizeX = img->sizeX;
+	new.sizeY = img->sizeY;
+	int size = new.sizeX * new.sizeY * 3;
+	new.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
 
 	for(i = 0; i< size; i+=3){
 
@@ -155,7 +156,35 @@ Image newImageFromCloud(Cloud * c, Image * img){
 		new.data[i] = (GLubyte)r;
 		new.data[i+1] = (GLubyte)g;
 		new.data[i+2] = (GLubyte)b;
-		
 	}
+	return new;
+}
+
+Image newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root){
+
+	int i, h = 0, s = 0, v = 0;
+	Image new;
+	new.sizeX = img->sizeX;
+	new.sizeY = img->sizeY;
+	int size = new.sizeX * new.sizeY;
+	new.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
+
+	short* CLUTData = (short*)malloc((size_t) 3 * sizeof(short));
+
+	for(i = 0; i< size * 3; i += 3 ){
+
+		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
+
+
+		CLUTData[0] = c->_data[h][s][v][0];
+		CLUTData[1] = c->_data[h][s][v][1];
+		CLUTData[2] = c->_data[h][s][v][2];
+		
+
+		new.data[(int)i/3] = getIndexFromData(CLUTData, root);
+
+	}
+    free(CLUTData);
+
 	return new;
 }

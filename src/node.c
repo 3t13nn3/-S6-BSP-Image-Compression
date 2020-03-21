@@ -58,11 +58,15 @@ void freeAllChildren(Node* n){
 	free(n);
 }
 
-/*Test function, care, cpt argument make 2^cpt nodes*/
+/*
+**Test function, care, cpt argument make 2^(cpt+1) leaves
+**So we need to call the function with cpt - 1 to get the real depth
+*/
 void createTree(Node * n, int cpt, Cut cut, int actualCutAxe) {
-	if(cpt == 0 || cpt > 40)
-		return;
 
+	if(cpt <= 0){
+		return;
+	}
 
 	Subset left;
 	Subset right;
@@ -110,14 +114,14 @@ void createTree(Node * n, int cpt, Cut cut, int actualCutAxe) {
 		createTree(n->_rightChild,cpt-1,getCutFromSubset(&right, nextCut),nextCut);
 }
 
-void modifyCloudFromTree(Cloud * c, Node * tree){
+void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 	
 	if(tree->_leftChild != NULL){
-		modifyCloudFromTree(c, tree->_leftChild);
+		modifyCloudFromTree(c, CLUT, tree->_leftChild);
 	}
 	
 	if(tree->_rightChild != NULL){
-		modifyCloudFromTree(c, tree->_rightChild);
+		modifyCloudFromTree(c, CLUT, tree->_rightChild);
 	}
 
 	if(tree->_leftChild == NULL && tree->_rightChild == NULL) { //leaf -> subset
@@ -129,6 +133,8 @@ void modifyCloudFromTree(Cloud * c, Node * tree){
 		                            * (tree->_subset._coordinates[7]._y - tree->_subset._coordinates[0]._y)
 									* (tree->_subset._coordinates[7]._z - tree->_subset._coordinates[0]._z));
 
+		short* CLUTData = (short*)malloc((size_t) 3 * sizeof(short));
+	
 		if(nbIterations > 0 ){
 			for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
 
@@ -136,12 +142,9 @@ void modifyCloudFromTree(Cloud * c, Node * tree){
 
 					for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
 
-						if(c->_data[i][j][k] != NULL){
-
-							hAverage+= i;
-							sAverage+= j;
-							vAverage+= k;	
-						}
+						hAverage+= i;
+						sAverage+= j;
+						vAverage+= k;	
 					}
 				}
 			}
@@ -149,6 +152,7 @@ void modifyCloudFromTree(Cloud * c, Node * tree){
 			hAverage/=nbIterations*3;
 			sAverage/=nbIterations*3;
 			vAverage/=nbIterations*3;
+
 
 			/*Assignation of the subset average component for every components of the subset*/
 			for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
@@ -163,6 +167,15 @@ void modifyCloudFromTree(Cloud * c, Node * tree){
 					}
 				}
 			}
+
+			/*ADDING COLOR TO OUR CLUT*/
+			CLUTData[0] = (short)hAverage;
+			CLUTData[1] = (short)sAverage;
+			CLUTData[2] = (short)vAverage;
+
+			addCLUTNodeChild(CLUTData, CLUT);
+
+			free(CLUTData);
 		}
 	}
 }

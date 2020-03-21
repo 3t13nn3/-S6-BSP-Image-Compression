@@ -1,6 +1,6 @@
 #include "head.h"
 
-#define CREATOR "JJ"
+#define CREATOR "EP"
 #define RGB_COMPONENT_COLOR 255
 
 int ImageLoad_PPM(char *filename, Image *img)
@@ -88,7 +88,7 @@ int ImageLoad_PPM(char *filename, Image *img)
     fclose(fp);
     return 1;
 }
-void imagesave_PPM(char *filename, Image *img)
+void imagesave_PPM(char *filename, Image *img, CLUTNode* root)
 {
     FILE *fp;
     //open file for output
@@ -98,23 +98,20 @@ void imagesave_PPM(char *filename, Image *img)
          exit(1);
     }
 
-    //write the header file
-    //image format
-    fprintf(fp, "P6\n");
-
     //comments
     fprintf(fp, "# Created by %s\n",CREATOR);
 
     //image size
     fprintf(fp, "%lu %lu\n",img->sizeX,img->sizeY);
 
-    // rgb component depth
-    fprintf(fp, "%d\n",RGB_COMPONENT_COLOR);
+    // clut
+    fprintf(fp, "HSV");
+    CLUTfileWriter(fp, root->_child);
 
     // pixel data
     int cpt = img->sizeY - 1;
     while(cpt >= 0){
-        fwrite(&img->data[cpt * 3 * img->sizeX], (size_t) 1, (size_t) (3 * img->sizeX), fp);
+        fwrite(&img->data[cpt * img->sizeX], (size_t) 1, (size_t) (img->sizeX), fp);
         --cpt;
     }
     fclose(fp);

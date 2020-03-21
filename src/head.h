@@ -4,8 +4,11 @@
 #include <assert.h>
 #include <unistd.h>
 
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
-#include <GL/glu.h>
+#endif
 
 //8 Points for representaing a rectangular space
 #define NB_SUBSET_POINT 8
@@ -64,11 +67,39 @@ struct cloud{
 typedef struct cloud Cloud;
 
 
+typedef struct node Node;
+struct node{
+
+	Node* _leftChild;
+	Node* _rightChild;
+	Subset _subset;
+};
+
+
+int treeDepth;
+
+typedef struct clutNode CLUTNode;
+struct clutNode{
+
+	CLUTNode* _child;
+  short* _data;
+  short _index;
+};
+
+/*GLOBAL*/
+
+Image* image;
+Image new;
+Image compressed;
+Cloud myCloud;
+Node* root;
+CLUTNode * CLUT;
+
 /*PPM*/
 
 int ImageLoad_PPM(char *filename, Image *image);
 
-void imagesave_PPM(char *filename, Image *image);
+void imagesave_PPM(char *filename, Image *img, CLUTNode* root);
 
 
 /*POINT*/
@@ -122,17 +153,9 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b);
 
 Image newImageFromCloud(Cloud * c, Image * img);
 
+Image newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root);
 
 /*NODE*/
-
-typedef struct node Node;
-struct node{
-
-	Node* _leftChild;
-	Node* _rightChild;
-	Subset _subset;
-};
-
 
 Node* newNode(Subset sub);
 
@@ -146,17 +169,10 @@ void freeAllChildren(Node* n);
 
 void createTree(Node * n, int cpt, Cut cut, int actualCutAxe);
 
-void modifyCloudFromTree(Cloud * c, Node * tree);
+void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree);
 
 
 /*MENU*/
-
-//Accessing to our main image & Cloud from here
-extern Image *image;
-extern Image new;
-extern Cloud myCloud;
-extern Node* root;
-
 
 void Keyboard(unsigned char key, int x, int y);
 
@@ -175,3 +191,20 @@ void menuFunc(int item);
 void initWindow(int argc, char **argv);
 
 void startGraphicalLoop();
+
+
+/*CLUT*/
+
+CLUTNode* newEmptyCLUTNode();
+
+void setCLUTNode(short* data, short index, CLUTNode * n);
+
+void addCLUTNodeChild(short* data, CLUTNode* father);
+
+void freeAllCLUTChildren(CLUTNode* n);
+
+GLubyte getIndexFromData(short* data, CLUTNode* father);
+
+void printAllCLUTChildren(CLUTNode* n);
+
+void CLUTfileWriter(FILE *fp, CLUTNode* n);

@@ -40,7 +40,6 @@ int Init(char *s) {
 	if (ImageLoad_PPM(s, image)==-1)
 		return(-1);
 
-
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_FLAT);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -89,10 +88,10 @@ void menuFunc(int item) {
 	case 0:
 		printf("Entrer le nom pour l'image dans cette taille\n");
 		scanf("%s", &s[0]);
-		imagesave_PPM(s, image);
+		imagesave_PPM(s, &compressed, CLUT);
 		break;
 	case 1:
-		*image = newImageFromCloud(&myCloud, image);
+		*image = new;
 		break;
 	case 2:
 		free(image);

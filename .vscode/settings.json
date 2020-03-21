@@ -5,6 +5,10 @@
         "initializer_list": "c",
         "utility": "c",
         "valarray": "c",
-        "head.h": "c"
+        "head.h": "c",
+        "glut.h": "c",
+        "glu.h": "c",
+        "stdio.h": "c",
+        "random": "c"
     }
 }

@@ -15,8 +15,11 @@ CC	 	= gcc
 
 CFLAGS	= -Ofast -pedantic -Wall -W
 
-linuxLFLAGS	= -lm -lglut -lGL -lGLU
-macosLFLAGS = -framework OpenGL -framework GLUT -framework Cocoa
+ifeq ($(shell uname -s), Darwin)
+	LFLAGS	= -framework OpenGL -framework GLUT -framework Cocoa
+else
+	LFLAGS = -lm -lglut -lGL -lGLU
+endif
 
 define directoryGenerator
 	@mkdir -p $(BUILD_DIR) > /dev/null
@@ -25,11 +28,8 @@ define directoryGenerator
 endef
 
 all: $(OBJS)
-ifeq ($(OS), Darwin)
-	$(CC) $(OBJS) -o $(BIN_DIR)/$(OUT) $(macosLFLAGS)
-else
-	$(CC) $(OBJS) -o $(BIN_DIR)/$(OUT) $(linuxLFLAGS)
-endif
+	$(CC) $(OBJS) -o $(BIN_DIR)/$(OUT) $(LFLAGS)
+
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(SRC_DIR)/%.h
 	$(call directoryGenerator)
