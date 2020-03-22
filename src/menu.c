@@ -88,7 +88,7 @@ void menuFunc(int item) {
 	
 	switch(item){
 	case 0:
-		printf("Entrer le nom pour l'image\n");
+		printf("Entrer un nom pour l'image compressée:\n");
 		scanf("%s", &s[0]);
 		compressToBSP(s, &compressed, CLUT);
 		break;
@@ -105,11 +105,11 @@ void menuFunc(int item) {
 		printf("Taille de l image : %d %d\n", (int) image->sizeX, (int) image->sizeY);
 		break;
 	case 4:
-		printf("Entrer le nom pour l'image\n");
+		printf("Entrer le nom pour de l'image à décompresser:\n");
 		scanf("%s", &s[0]);
 		//loadCompressedBSP(s);
 		extracted = loadCompressedBSP(s);
-		imagesave_PPM("newone.ppm", &extracted);
+		imagesave_PPM("uncompressed.ppm", &extracted);
 		break;
 	default:
 		break;

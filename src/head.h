@@ -30,7 +30,7 @@
 #define Q 113
 
 /*DATA STRUCT*/
-typedef short usedType;
+typedef GLubyte usedType;
 
 struct Image {
     unsigned long sizeX;

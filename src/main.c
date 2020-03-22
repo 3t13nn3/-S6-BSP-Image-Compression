@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	Init(argv[1]);
 
 	modifyCloudFromTree(&myCloud, CLUT, root);
-	printAllCLUTChildren(CLUT->_child);
+	//printAllCLUTChildren(CLUT->_child);
 	new = newImageFromCloud(&myCloud, image);
 	compressed = newCompressedImageFromCloud(&myCloud, image, CLUT);
 	startGraphicalLoop();

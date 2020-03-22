@@ -10,22 +10,18 @@ void compressToBSP(char *filename, CompressedImage *img, CLUTNode* root){
 	 exit(1);
 	}
 
-    //format
-    fprintf(fp, "BSP\n");
-    //nb of subspaces 2<<(nb)
     usedType nbSubset = getCLUTSize(root);
+    //printf("%d\n", nbSubset);
 
+    //writing the number of subset
     fwrite(&nbSubset, (size_t) 1, sizeof(usedType), fp);
-    fprintf(fp, "\n");
-	//comments
-	fprintf(fp, "# Created by EP\n");
 
 	//image size
-	fprintf(fp, "%lu %lu\n",img->sizeX,img->sizeY);
+    fwrite(&img->sizeX, (size_t) 1, sizeof(unsigned long), fp);
+    fwrite(&img->sizeY, (size_t) 1, sizeof(unsigned long), fp);
 
 	// clut
 	CLUTfileWriter(fp, root->_child);
-	fprintf(fp, "\n");
 
 	// pixel data
 	int cpt = img->sizeY - 1;
@@ -44,20 +40,18 @@ Image loadCompressedBSP(char *filename){
 
     Image toReturn;
 
-    char d, buff[16];
     FILE *fp;
     unsigned long bb;
-    int c, rgb_comp_color, size, sizex;//, sizey;
+    int c, size, sizex;
     GLubyte tmp, * ptrdeb, *ptrfin, *lastline;
 
     int i;
     int cpt = 0;
-    GLubyte clutSize;
     GLubyte* r;
     GLubyte* g;
     GLubyte* b;
     usedType index;
-    GLubyte nbSubset;
+    usedType nbSubset;
 
     //open PPM file for reading
     fp = fopen(filename, "rb");
@@ -66,41 +60,12 @@ Image loadCompressedBSP(char *filename){
         exit(1);
     }
 
-    //read image format
-    if (!fgets(buff, sizeof(buff), fp)) {
-        perror(filename);
-        exit(1);
-    }
-
-    //check the image format
-    if (buff[0] != 'B' || buff[1] != 'S' || buff[2] != 'P') {
-         fprintf(stderr, "Invalid image format (must be 'BSP')\n");
-         exit(1);
-    }
-
     fread(&nbSubset, sizeof(usedType), 1, fp);
-    printf("%dok\n", nbSubset);
+    //printf("%dok\n", nbSubset);
 
-    getc(fp);
-    //check for comments
-    c = getc(fp);
-    while (c == '#') {
-	    while (getc(fp) != '\n')
-	        ;
-	    c = getc(fp);
-    }
-
-   ungetc(c,fp);
-    
-    //read image size information
-    if (fscanf(fp, "%lu %lu", &toReturn.sizeX, &toReturn.sizeY) != 2) {
-        fprintf(stderr, "Invalid image size (error loading '%s')\n", filename);
-        exit(1);
-    }
-        
-    printf("%lu %lu\n", toReturn.sizeX, toReturn.sizeY);
-    
-    getc(fp);
+    fread(&toReturn.sizeX, sizeof(unsigned long), 1, fp);
+    fread(&toReturn.sizeY, sizeof(unsigned long), 1, fp);
+    //printf("%lu %lu\n", toReturn.sizeX, toReturn.sizeY);
 
     r = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
     g = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
@@ -117,26 +82,20 @@ Image loadCompressedBSP(char *filename){
         r[(int)index]=aa;
         g[(int)index]=bb;
         b[(int)index]=cc;
-        printf("%d %d %d %d\n", index, r[(int)index], g[(int)index], b[(int)index]);
+        //printf("%d %d %d %d\n", index, r[(int)index], g[(int)index], b[(int)index]);
         cpt++;
     }
     
 
-
 	/* allocation memoire */
 	size = toReturn.sizeX * toReturn.sizeY * 3;
-	printf("Size image %lu %lu => %d\n", toReturn.sizeX, toReturn.sizeY, size);
+	//printf("Size image %lu %lu => %d\n", toReturn.sizeX, toReturn.sizeY, size);
 	toReturn.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
 	assert(toReturn.data);
     
-    while (getc(fp) != '\n')
-	        ;
-    //getc(fp);
-
-    /*Il faut bien se pôsitionner ici pour les shorts!!!!!!!!!!!!*/
 
     //read pixel data from file
-    for(i = 0; i < (int)toReturn.sizeX * toReturn.sizeY; i ++){
+    for(i = 0; i < (int)(toReturn.sizeX * toReturn.sizeY); i ++){
         //lit mal ici
         fread(&index, sizeof(usedType), 1, fp);
         //printf("%d\n", (int)index);

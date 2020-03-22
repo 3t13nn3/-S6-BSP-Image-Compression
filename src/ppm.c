@@ -53,7 +53,7 @@ int ImageLoad_PPM(char *filename, Image *img)
     }
 	/* allocation memoire */
 	size = img->sizeX * img->sizeY * 3;
-	printf("Size image %lu %lu => %d\n", img->sizeX, img->sizeY, size);
+	//printf("Size image %lu %lu => %d\n", img->sizeX, img->sizeY, size);
 	img->data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
 	assert(img->data);
 									
