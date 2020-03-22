@@ -162,27 +162,29 @@ Image newImageFromCloud(Cloud * c, Image * img){
 
 Image newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root){
 
-	int i, h = 0, s = 0, v = 0;
+	int i, h = 0, s = 0, v = 0, r = 0, g = 0, b = 0;
 	Image new;
 	new.sizeX = img->sizeX;
 	new.sizeY = img->sizeY;
 	int size = new.sizeX * new.sizeY;
 	new.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
 
-	short* CLUTData = (short*)malloc((size_t) 3 * sizeof(short));
+	GLubyte* CLUTData = (GLubyte*)malloc((size_t) 3 * sizeof(GLubyte));
 
 	for(i = 0; i< size * 3; i += 3 ){
 
 		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
 
+		hsv2rgb(c->_data[h][s][v][0], c->_data[h][s][v][1], c->_data[h][s][v][2], &r, &g, &b);
 
-		CLUTData[0] = c->_data[h][s][v][0];
-		CLUTData[1] = c->_data[h][s][v][1];
-		CLUTData[2] = c->_data[h][s][v][2];
+
+		CLUTData[0] = r;
+		CLUTData[1] = g;
+		CLUTData[2] = b;
 		
 
 		new.data[(int)i/3] = getIndexFromData(CLUTData, root);
-
+		//printf("%d %d %d %d\n", CLUTData[0],CLUTData[1],CLUTData[2],new.data[(int)i/3]);
 	}
     free(CLUTData);
 

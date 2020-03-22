@@ -5,11 +5,13 @@ void Keyboard(unsigned char key, int x, int y) {
 	case ESCAPE:
 		free(image);
 		freeAllChildren(root);
+		freeAllCLUTChildren(CLUT);
 		exit(1);
 		break;
 	case Q:
 		free(image);
 		freeAllChildren(root);
+		freeAllCLUTChildren(CLUT);
 		exit(1);
 		break;
 	default:
@@ -86,9 +88,9 @@ void menuFunc(int item) {
 
 	switch(item){
 	case 0:
-		printf("Entrer le nom pour l'image dans cette taille\n");
+		printf("Entrer le nom pour l'image\n");
 		scanf("%s", &s[0]);
-		imagesave_PPM(s, &compressed, CLUT);
+		compressToBSP(s, &compressed, CLUT);
 		break;
 	case 1:
 		*image = new;
@@ -96,10 +98,16 @@ void menuFunc(int item) {
 	case 2:
 		free(image);
 		freeAllChildren(root);
+		freeAllCLUTChildren(CLUT);
 		exit(0);
 		break;
 	case 3:
 		printf("Taille de l image : %d %d\n", (int) image->sizeX, (int) image->sizeY);
+		break;
+	case 4:
+		printf("Entrer le nom pour l'image\n");
+		scanf("%s", &s[0]);
+		loadCompressedBSP(s);
 		break;
 	default:
 		break;
@@ -117,10 +125,11 @@ void initWindow(int argc, char **argv) {
 void startGraphicalLoop(){
 	glutCreateMenu(menuFunc);
 
-	glutAddMenuEntry("Save", 0);
-	glutAddMenuEntry("New", 1);
+	glutAddMenuEntry("Compress", 0);
+	glutAddMenuEntry("View Compress", 1);
 	glutAddMenuEntry("Quit", 2);
 	glutAddMenuEntry("Informations", 3);
+	glutAddMenuEntry("Extract", 4);
 	glutAttachMenu(GLUT_LEFT_BUTTON);
 
 	glutDisplayFunc(Display);

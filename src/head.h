@@ -82,8 +82,8 @@ typedef struct clutNode CLUTNode;
 struct clutNode{
 
 	CLUTNode* _child;
-  short* _data;
-  short _index;
+  GLubyte* _data;
+  GLubyte _index;
 };
 
 /*GLOBAL*/
@@ -99,8 +99,7 @@ CLUTNode * CLUT;
 
 int ImageLoad_PPM(char *filename, Image *image);
 
-void imagesave_PPM(char *filename, Image *img, CLUTNode* root);
-
+void imagesave_PPM(char *filename, Image *img);
 
 /*POINT*/
 
@@ -197,14 +196,26 @@ void startGraphicalLoop();
 
 CLUTNode* newEmptyCLUTNode();
 
-void setCLUTNode(short* data, short index, CLUTNode * n);
+void setCLUTNode(GLubyte* data, GLubyte index, CLUTNode * n);
 
-void addCLUTNodeChild(short* data, CLUTNode* father);
+void addCLUTNodeChild(GLubyte* data, CLUTNode* father);
 
 void freeAllCLUTChildren(CLUTNode* n);
 
-GLubyte getIndexFromData(short* data, CLUTNode* father);
+GLubyte getIndexFromData(GLubyte* data, CLUTNode* father);
+
+GLubyte getCLUTSize(CLUTNode* father);
 
 void printAllCLUTChildren(CLUTNode* n);
 
 void CLUTfileWriter(FILE *fp, CLUTNode* n);
+
+
+/*COMPRESSION*/
+
+void compressToBSP(char *filename, Image *img, CLUTNode* root);
+
+Image loadCompressedBSP(char *filename);
+
+void extractFromBSP(char *filename);
+

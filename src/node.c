@@ -133,7 +133,7 @@ void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 		                            * (tree->_subset._coordinates[7]._y - tree->_subset._coordinates[0]._y)
 									* (tree->_subset._coordinates[7]._z - tree->_subset._coordinates[0]._z));
 
-		short* CLUTData = (short*)malloc((size_t) 3 * sizeof(short));
+		GLubyte* CLUTData = (GLubyte*)malloc((size_t) 3 * sizeof(GLubyte));
 	
 		if(nbIterations > 0 ){
 			for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
@@ -168,10 +168,12 @@ void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 				}
 			}
 
+			int r, g,b;
+			hsv2rgb(hAverage, sAverage, vAverage, &r, &g, &b);
 			/*ADDING COLOR TO OUR CLUT*/
-			CLUTData[0] = (short)hAverage;
-			CLUTData[1] = (short)sAverage;
-			CLUTData[2] = (short)vAverage;
+			CLUTData[0] = (GLubyte)r;
+			CLUTData[1] = (GLubyte)g;
+			CLUTData[2] = (GLubyte)b;
 
 			addCLUTNodeChild(CLUTData, CLUT);
 

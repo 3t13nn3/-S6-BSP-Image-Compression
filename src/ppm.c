@@ -1,8 +1,5 @@
 #include "head.h"
 
-#define CREATOR "EP"
-#define RGB_COMPONENT_COLOR 255
-
 int ImageLoad_PPM(char *filename, Image *img)
 {
   char d, buff[16];
@@ -50,7 +47,7 @@ int ImageLoad_PPM(char *filename, Image *img)
     }
     fscanf(fp, "%c ", &d);
     //check rgb component depth
-    if (rgb_comp_color!= RGB_COMPONENT_COLOR) {
+    if (rgb_comp_color!= 255) {
          fprintf(stderr, "'%s' does not have 8-bits components\n", filename);
          exit(1);
     }
@@ -88,7 +85,8 @@ int ImageLoad_PPM(char *filename, Image *img)
     fclose(fp);
     return 1;
 }
-void imagesave_PPM(char *filename, Image *img, CLUTNode* root)
+
+void imagesave_PPM(char *filename, Image *img)
 {
     FILE *fp;
     //open file for output
@@ -98,20 +96,22 @@ void imagesave_PPM(char *filename, Image *img, CLUTNode* root)
          exit(1);
     }
 
+    //write the header file
+    //image format
+    fprintf(fp, "P6\n");
+
     //comments
-    fprintf(fp, "# Created by %s\n",CREATOR);
+    fprintf(fp, "# Created by EP\n");
 
     //image size
     fprintf(fp, "%lu %lu\n",img->sizeX,img->sizeY);
 
-    // clut
-    fprintf(fp, "HSV");
-    CLUTfileWriter(fp, root->_child);
+    fprintf(fp, "255\n");
 
     // pixel data
     int cpt = img->sizeY - 1;
     while(cpt >= 0){
-        fwrite(&img->data[cpt * img->sizeX], (size_t) 1, (size_t) (img->sizeX), fp);
+        fwrite(&img->data[cpt * 3 * img->sizeX], (size_t) 1, (size_t) (3 * img->sizeX), fp);
         --cpt;
     }
     fclose(fp);

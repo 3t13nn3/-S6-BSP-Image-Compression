@@ -12,11 +12,11 @@ CLUTNode* newEmptyCLUTNode(){
 	return toReturn;
 }
 
-void setCLUTNode(short* data, short index, CLUTNode * n){
+void setCLUTNode(GLubyte* data, GLubyte index, CLUTNode * n){
 
     int i;
 
-    n->_data = (short*)malloc((size_t) 3 * sizeof(short));
+    n->_data = (GLubyte*)malloc((size_t) 3 * sizeof(GLubyte));
 
     for(i = 0; i< 3; ++i){
 	    n->_data[i] = data[i];
@@ -26,7 +26,7 @@ void setCLUTNode(short* data, short index, CLUTNode * n){
 }
 
 /*Return the index of the new node*/
-void addCLUTNodeChild(short* data, CLUTNode* father){
+void addCLUTNodeChild(GLubyte* data, CLUTNode* father){
 
     while(father->_child != NULL){
 
@@ -43,17 +43,24 @@ void addCLUTNodeChild(short* data, CLUTNode* father){
     //printf("%d\n",father->_index);
 }
 
-GLubyte getIndexFromData(short* data, CLUTNode* father){
+GLubyte getIndexFromData(GLubyte* data, CLUTNode* father){
     
-    while(father->_child != NULL){
-                
+    while(father->_child != NULL){       
         if(father->_child->_data[0] == data[0] && father->_child->_data[1] == data[1] && father->_child->_data[2] == data[2]){ //if the color is already in our CLUT
             //printf("%d %d %d %d %d %d\n", father->_child->_data[0], data[0], father->_child->_data[1], data[1], father->_child->_data[2], data[2]);
             break;
         }
         father = father->_child;
     }
-    return (GLubyte)father->_index;
+    return (GLubyte)father->_index + 1;
+}
+
+GLubyte getCLUTSize(CLUTNode* father){
+    
+    while(father->_child != NULL){       
+        father = father->_child;
+    }
+    return (GLubyte)father->_index + 1;
 }
 
 void freeAllCLUTChildren(CLUTNode* n){
@@ -76,11 +83,26 @@ void printAllCLUTChildren(CLUTNode* n){
 }
 
 void CLUTfileWriter(FILE *fp, CLUTNode* n){
-    
-    fprintf(fp," %d %d %d %d", n->_index, n->_data[0],n->_data[1],n->_data[2]);
 
 	if(n->_child != NULL){
 
-		printAllCLUTChildren(n->_child);
+		CLUTfileWriter(fp, n->_child);
 	}
+
+    GLubyte index, r, g, b;
+    
+    index = n->_index;
+    r = n->_data[0];
+    g = n->_data[1];
+    b = n->_data[2];
+
+    //writing GLubyte instead of int into our file
+    //printf("%d %d %d %d\n", n->_index, n->_data[0],n->_data[1],n->_data[2]);
+   // printf("%d %d %d %d\n", index, rTmp, gTmp, bTmp);
+
+    fwrite(&index, (size_t) 1, sizeof(GLubyte), fp);
+    fwrite(&r, (size_t) 1, sizeof(GLubyte), fp);
+    fwrite(&g, (size_t) 1, sizeof(GLubyte), fp);
+    fwrite(&b, (size_t) 1, sizeof(GLubyte), fp);
+    //fprintf(fp,"%hhd %hhd %hhd %hhd ", index, r, g, b);
 }
