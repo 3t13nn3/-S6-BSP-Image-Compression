@@ -30,6 +30,7 @@
 #define Q 113
 
 /*DATA STRUCT*/
+typedef short usedType;
 
 struct Image {
     unsigned long sizeX;
@@ -38,6 +39,12 @@ struct Image {
 };
 typedef struct Image Image;
 
+struct compressedImage {
+    unsigned long sizeX;
+    unsigned long sizeY;
+    usedType *data;
+};
+typedef struct compressedImage CompressedImage;
 
 struct point{
 
@@ -83,14 +90,15 @@ struct clutNode{
 
 	CLUTNode* _child;
   GLubyte* _data;
-  GLubyte _index;
+  usedType _index;
 };
 
 /*GLOBAL*/
 
 Image* image;
 Image new;
-Image compressed;
+CompressedImage compressed;
+Image extracted;
 Cloud myCloud;
 Node* root;
 CLUTNode * CLUT;
@@ -152,7 +160,7 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b);
 
 Image newImageFromCloud(Cloud * c, Image * img);
 
-Image newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root);
+CompressedImage newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root);
 
 /*NODE*/
 
@@ -196,15 +204,15 @@ void startGraphicalLoop();
 
 CLUTNode* newEmptyCLUTNode();
 
-void setCLUTNode(GLubyte* data, GLubyte index, CLUTNode * n);
+void setCLUTNode(GLubyte* data, usedType index, CLUTNode * n);
 
 void addCLUTNodeChild(GLubyte* data, CLUTNode* father);
 
 void freeAllCLUTChildren(CLUTNode* n);
 
-GLubyte getIndexFromData(GLubyte* data, CLUTNode* father);
+usedType getIndexFromData(GLubyte* data, CLUTNode* father);
 
-GLubyte getCLUTSize(CLUTNode* father);
+usedType getCLUTSize(CLUTNode* father);
 
 void printAllCLUTChildren(CLUTNode* n);
 
@@ -213,9 +221,8 @@ void CLUTfileWriter(FILE *fp, CLUTNode* n);
 
 /*COMPRESSION*/
 
-void compressToBSP(char *filename, Image *img, CLUTNode* root);
+void compressToBSP(char *filename, CompressedImage *img, CLUTNode* root);
 
 Image loadCompressedBSP(char *filename);
 
 void extractFromBSP(char *filename);
-

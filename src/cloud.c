@@ -160,14 +160,14 @@ Image newImageFromCloud(Cloud * c, Image * img){
 	return new;
 }
 
-Image newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root){
+CompressedImage newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * root){
 
 	int i, h = 0, s = 0, v = 0, r = 0, g = 0, b = 0;
-	Image new;
+	CompressedImage new;
 	new.sizeX = img->sizeX;
 	new.sizeY = img->sizeY;
 	int size = new.sizeX * new.sizeY;
-	new.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
+	new.data = (usedType *) malloc ((size_t) size * sizeof (usedType));
 
 	GLubyte* CLUTData = (GLubyte*)malloc((size_t) 3 * sizeof(GLubyte));
 

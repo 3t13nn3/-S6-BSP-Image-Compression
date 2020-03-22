@@ -12,7 +12,7 @@ CLUTNode* newEmptyCLUTNode(){
 	return toReturn;
 }
 
-void setCLUTNode(GLubyte* data, GLubyte index, CLUTNode * n){
+void setCLUTNode(GLubyte* data, usedType index, CLUTNode * n){
 
     int i;
 
@@ -43,7 +43,7 @@ void addCLUTNodeChild(GLubyte* data, CLUTNode* father){
     //printf("%d\n",father->_index);
 }
 
-GLubyte getIndexFromData(GLubyte* data, CLUTNode* father){
+usedType getIndexFromData(GLubyte* data, CLUTNode* father){
     
     while(father->_child != NULL){       
         if(father->_child->_data[0] == data[0] && father->_child->_data[1] == data[1] && father->_child->_data[2] == data[2]){ //if the color is already in our CLUT
@@ -52,15 +52,15 @@ GLubyte getIndexFromData(GLubyte* data, CLUTNode* father){
         }
         father = father->_child;
     }
-    return (GLubyte)father->_index + 1;
+    return father->_index + 1;
 }
 
-GLubyte getCLUTSize(CLUTNode* father){
+usedType getCLUTSize(CLUTNode* father){
     
     while(father->_child != NULL){       
         father = father->_child;
     }
-    return (GLubyte)father->_index + 1;
+    return father->_index + 1;
 }
 
 void freeAllCLUTChildren(CLUTNode* n){
@@ -89,7 +89,8 @@ void CLUTfileWriter(FILE *fp, CLUTNode* n){
 		CLUTfileWriter(fp, n->_child);
 	}
 
-    GLubyte index, r, g, b;
+    GLubyte r, g, b;
+    usedType index;
     
     index = n->_index;
     r = n->_data[0];
@@ -100,7 +101,7 @@ void CLUTfileWriter(FILE *fp, CLUTNode* n){
     //printf("%d %d %d %d\n", n->_index, n->_data[0],n->_data[1],n->_data[2]);
    // printf("%d %d %d %d\n", index, rTmp, gTmp, bTmp);
 
-    fwrite(&index, (size_t) 1, sizeof(GLubyte), fp);
+    fwrite(&index, (size_t) 1, sizeof(usedType), fp);
     fwrite(&r, (size_t) 1, sizeof(GLubyte), fp);
     fwrite(&g, (size_t) 1, sizeof(GLubyte), fp);
     fwrite(&b, (size_t) 1, sizeof(GLubyte), fp);

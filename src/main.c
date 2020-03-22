@@ -2,10 +2,6 @@
 
 int main(int argc, char **argv) {
 
-	Image i = loadCompressedBSP("toto");
-	imagesave_PPM("newone.ppm", &i);
-
-
 	if (argc<3) {
 		fprintf(stderr, "Usage : ./bsp myImage.ppm treeDepth\n");
 		exit(0);
@@ -30,7 +26,7 @@ int main(int argc, char **argv) {
 	Init(argv[1]);
 
 	modifyCloudFromTree(&myCloud, CLUT, root);
-	//printAllCLUTChildren(CLUT->_child);
+	printAllCLUTChildren(CLUT->_child);
 	new = newImageFromCloud(&myCloud, image);
 	compressed = newCompressedImageFromCloud(&myCloud, image, CLUT);
 	startGraphicalLoop();

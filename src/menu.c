@@ -85,7 +85,7 @@ void Reshape(int w, int h) {
 
 void menuFunc(int item) {
 	char s[256];
-
+	
 	switch(item){
 	case 0:
 		printf("Entrer le nom pour l'image\n");
@@ -107,7 +107,9 @@ void menuFunc(int item) {
 	case 4:
 		printf("Entrer le nom pour l'image\n");
 		scanf("%s", &s[0]);
-		loadCompressedBSP(s);
+		//loadCompressedBSP(s);
+		extracted = loadCompressedBSP(s);
+		imagesave_PPM("newone.ppm", &extracted);
 		break;
 	default:
 		break;
