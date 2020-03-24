@@ -29,8 +29,13 @@
 #define ESCAPE 27
 #define Q 113
 
+#ifdef SHORT
+  typedef short usedType;
+#else
+  typedef GLubyte usedType;
+#endif
+
 /*DATA STRUCT*/
-typedef GLubyte usedType;
 
 struct Image {
     unsigned long sizeX;
@@ -156,7 +161,7 @@ void printCloud(Cloud * c);
 
 void rgb2hsv(int r, int g, int b, int* h, int* s, int* v);
 
-void hsv2rgb(int h, double s, double v, int* r, int* g, int* b);
+void hsv2rgb(int h, int s, int v, int* r, int* g, int* b);
 
 Image newImageFromCloud(Cloud * c, Image * img);
 

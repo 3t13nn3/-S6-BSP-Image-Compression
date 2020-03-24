@@ -149,9 +149,9 @@ void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 				}
 			}
 
-			hAverage/=nbIterations*3;
-			sAverage/=nbIterations*3;
-			vAverage/=nbIterations*3;
+			hAverage/=nbIterations;
+			sAverage/=nbIterations;
+			vAverage/=nbIterations;
 
 
 			/*Assignation of the subset average component for every components of the subset*/

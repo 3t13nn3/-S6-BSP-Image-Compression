@@ -13,7 +13,7 @@ OBJS	= $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SRC:%.c=%.o))
 OUT		= bsp.out
 CC	 	= gcc
 
-CFLAGS	= -Ofast -pedantic -Wall -W
+CFLAGS	= $(TYPE) -Ofast -pedantic -Wall -W
 
 ifeq ($(shell uname -s), Darwin)
 	LFLAGS	= -framework OpenGL -framework GLUT -framework Cocoa

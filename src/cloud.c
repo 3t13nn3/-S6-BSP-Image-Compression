@@ -81,13 +81,14 @@ void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
 		*h+=360;
 
 }
-
+/*
 void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 
 	//We made calculus on double and at least giving them to integer pointer
 	double rt = 0;
 	double gt = 0;
 	double bt = 0;
+	
 
 	//tranlate saturation and value into [0;1] range
 	s/=100;
@@ -136,7 +137,63 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 	*r = (rt+m)*255;
 	*g = (gt+m)*255;
 	*b = (bt+m)*255;
+}*/
+
+
+void hsv2rgb(int h, int s, int v, int* r, int* g, int* b){
+
+    int rr,gg,bb;
+    unsigned char region, remainder, p, q, t;
+
+	h = h *256 / 360;
+
+	//printf("%d %d %d\n", h, s , v);
+    if (s == 0)
+    {
+        rr = v;
+        gg = v;
+        bb = v;
+		*r = rr;
+		*g = gg;
+		*b = bb;
+        return;
+    }
+
+    region = h / 43;
+    remainder = (h - (region * 43)) * 6; 
+
+    p = (v * (255 - s)) >> 8;
+    q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+    t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
+
+    switch (region)
+    {
+        case 0:
+            rr = v; gg = t; bb = p;
+            break;
+        case 1:
+            rr = q; gg = v; bb = p;
+            break;
+        case 2:
+            rr = p; gg = v; bb = t;
+            break;
+        case 3:
+            rr = p; gg = q; bb = v;
+            break;
+        case 4:
+            rr = t; gg = p; bb = v;
+            break;
+        default:
+            rr = v; gg = p; bb = q;
+            break;
+    }
+
+	//printf("%d %d %d \n", rr, gg ,bb);
+	*r = rr;
+	*g = gg;
+	*b = bb;
 }
+
 
 Image newImageFromCloud(Cloud * c, Image * img){
 
@@ -184,7 +241,7 @@ CompressedImage newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * r
 		
 
 		new.data[(int)i/3] = getIndexFromData(CLUTData, root);
-		//printf("%d %d %d %d\n", CLUTData[0],CLUTData[1],CLUTData[2],new.data[(int)i/3]);
+		
 	}
     free(CLUTData);
 

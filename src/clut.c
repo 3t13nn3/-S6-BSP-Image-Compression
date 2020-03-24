@@ -25,7 +25,6 @@ void setCLUTNode(GLubyte* data, usedType index, CLUTNode * n){
 	n->_index = index;
 }
 
-/*Return the index of the new node*/
 void addCLUTNodeChild(GLubyte* data, CLUTNode* father){
 
     while(father->_child != NULL){
@@ -34,7 +33,20 @@ void addCLUTNodeChild(GLubyte* data, CLUTNode* father){
             return;
         }
         father = father->_child;
+        
+        if(father->_index == (int)(1 << (8 * sizeof(usedType))) - 1){
+            fprintf(stderr, "Number of color reach the maximum size of choosed type.\nUse an other type or an other number of subset!\n");
+            exit(0);
+        }
     }
+
+    
+    //printf("%d %ld\n",father->_index, (sizeof(usedType) << 8) - 1);
+    
+    /*if(father->_index == (int)(sizeof(usedType) << 8) - 1){
+        fprintf(stderr, "Number of color reach the maximum size of choosed type.\nUse an other type or an other number of subset!\n");
+		exit(0);
+    }*/
 
     CLUTNode* n = newEmptyCLUTNode();
     setCLUTNode(data, father->_index + 1, n);
