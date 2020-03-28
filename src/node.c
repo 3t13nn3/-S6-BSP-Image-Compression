@@ -109,9 +109,9 @@ void createTree(Node * n, int cpt, Cut cut, int actualCutAxe) {
 	}
 
 	addLeftNode(left,n);
-		createTree(n->_leftChild,cpt-1,getCutFromSubset(&left, nextCut),nextCut);
+		createTree(n->_leftChild,cpt-1,getCutFromSubset(&left, nextCut, 50),nextCut);
 	addRightNode(right,n);
-		createTree(n->_rightChild,cpt-1,getCutFromSubset(&right, nextCut),nextCut);
+		createTree(n->_rightChild,cpt-1,getCutFromSubset(&right, nextCut, 50),nextCut);
 }
 
 void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){

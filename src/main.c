@@ -2,29 +2,13 @@
 
 int main(int argc, char **argv) {
 
-	int r,g,b,h,s,v;
-
-	/*for(int i = 0; i < 360; ++i){
-		for(int j = 0; j < 256; j++){
-			for(int k = 0; k < 256; k++){	
-
-				rgb2hsv(i,j,k, &h,&s,&v);
-
-				printf("%d %d %d\n", h, s, v);
-
-				hsv2rgb(h, s, v, &r, &g, &b);
-
-				printf("%d %d %d\n", r, g, b);
-			}
-		}
-	}*/
-
 	if (argc<3) {
 		fprintf(stderr, "Usage : ./bsp myImage.ppm treeDepth\n");
 		exit(0);
 	}
-	else if(atoi(argv[2]) > 20){
-		printf("Too much subset to create, depth of 20 is sufficient.\n");
+	else if((1 << atoi(argv[2])) > (int)(1 << (8 * sizeof(usedType)))){ //checking if we can stock the number of subset
+
+		printf("Too much subset for the choosed type.\n");
 		exit(0);
 	}
 
@@ -32,7 +16,7 @@ int main(int argc, char **argv) {
 
 	initWindow(argc, argv);
 	Subset sub = newSubsetFromDimensions(H,S,V);
-	Cut myc = getCutFromSubset(&sub, X_AXE);
+	Cut myc = getCutFromSubset(&sub, X_AXE, 50);
 	root = newNode(sub);
 
 	createTree(root, treeDepth, myc, X_AXE);
@@ -47,7 +31,7 @@ int main(int argc, char **argv) {
 	
 	new = newImageFromCloud(&myCloud, image);
 	compressed = newCompressedImageFromCloud(&myCloud, image, CLUT);
-		printAllCLUTChildren(CLUT->_child);
+	printAllCLUTChildren(CLUT->_child);
 
 	startGraphicalLoop();
 

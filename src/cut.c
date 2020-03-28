@@ -24,7 +24,7 @@ Subset representation:
      \/ |/             |/
         3--------------4   
 */
-Cut getCutFromSubset(Subset * sub, int cutAxe) {
+Cut getCutFromSubset(Subset * sub, int cutAxe, int pourcentage) {
     
     //must affect them to avoid warnings --'
 	Point a = newPoint(0,0,0);
@@ -32,16 +32,15 @@ Cut getCutFromSubset(Subset * sub, int cutAxe) {
     Point c = newPoint(0,0,0);
     Point d = newPoint(0,0,0);
 
-    //According to x=(1−T)a+c & y=(1−T)b+d formulas to find a point on a segment in function of a ratio
-    //actually T is the ratio as T ∈ [0;1] & 2 points (a,b) and (c,b)...
-    //we are using totalDistance/2 as newPointDiscance value because we are cutting our space by half, but we could addapt it for the portion we want
+    //According to x=(1−T)a+b formula to find a point on a segment in function of a ratio
+    //actually T is the ratio as T ∈ [0;1] & 2 points a, b.
     float totalDistance, newPointDistance, T;
 
 	switch (cutAxe){
     case X_AXE:
 
         totalDistance = sub->_coordinates[1]._x - sub->_coordinates[0]._x;
-	    newPointDistance = totalDistance/2;
+	    newPointDistance = (totalDistance * pourcentage) / 100;
 
 	    T = newPointDistance/totalDistance;
 
@@ -68,7 +67,7 @@ Cut getCutFromSubset(Subset * sub, int cutAxe) {
 	case Y_AXE:
 
         totalDistance = sub->_coordinates[2]._y - sub->_coordinates[0]._y;
-	    newPointDistance = totalDistance/2;
+	    newPointDistance = (totalDistance * pourcentage) / 100;
 
 	    T = newPointDistance/totalDistance;
 
@@ -95,7 +94,7 @@ Cut getCutFromSubset(Subset * sub, int cutAxe) {
 	case Z_AXE:
 
         totalDistance = sub->_coordinates[4]._z - sub->_coordinates[0]._z;
-	    newPointDistance = totalDistance/2;
+	    newPointDistance = (totalDistance * pourcentage) / 100;
 
 	    T = newPointDistance/totalDistance;
 

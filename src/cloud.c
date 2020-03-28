@@ -6,17 +6,19 @@ void fillCloudfromImage(Cloud * c, Image * img){
 	int h = 0;
 	int s = 0;
 	int v = 0;
+
 	for(i = 0;  i < (int)(3 * img->sizeX * img->sizeY); ++i){
 
 		//converting RGB (image pixel) to HSV for our Cloud format
 		rgb2hsv(img->data[i], img->data[i+1], img->data[i+2], &h, &s, &v);
 
 		//Affecting a variable as a higher cost than a simple test, we don't want to reafect a variable
-		//if(c->_data[h][s][v] == NULL){
+		if(c->_data[h][s][v] == NULL){
+			
 			c->_data[h][s][v][0] = h;
 			c->_data[h][s][v][1] = s;
 			c->_data[h][s][v][2] = v;
-		//}
+		}
 	}
 }
 
@@ -78,9 +80,10 @@ void rgb2hsv(int r, int g, int b, int* h, int* s, int* v){
 
 	//angle couldn't be negativ, then add a complete round in degree
 	if(*h < 0)
-		*h+=360;
+		*h+=359;
 
 }
+
 /*
 void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 
@@ -91,9 +94,10 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 	
 
 	//tranlate saturation and value into [0;1] range
-	s/=100;
-	v/=100;
-
+	
+	s/=255;
+	v/=255;
+	//printf("%f %f \n", s , v);
 	double c = s * v;
 	double x = c * (1 - abs( ( (h/60)%2 ) - 1) );
 	double m = v - c;
@@ -102,50 +106,49 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 	int part = ceil(h/60);
 	switch(part){
 		case 1: //if(0 <= h && h < 60)
-			rt = c;
-			gt = x;
-			bt = 0;
+			*r = (int) c + m;
+			*g = (int) x + m;
+			*b = (int) m;
 			break;
 		case 2: //if(60 <= h && h < 120)
-			rt = x;
-			gt = c;
-			bt = 0;
+			*r = (int) x + m;
+			*g = (int) c + m;
+			*b = (int) m;
 			break;
 		case 3: //if(120 <= h && h < 180)
-			rt = 0;
-			gt = c;
-			bt = x;
+			*r = (int) m;
+			*g = (int) c + m;
+			*b = (int) x + m;
 			break;
 		case 4: //if(180 <= h && h < 240)
-			rt = 0;
-			gt = x;
-			bt = c;
+			*r = (int) m;
+			*g = (int) x + m;
+			*b = (int) c + m;
 			break;
 		case 5: //if(240 <= h && h < 300)
-			rt = x;
-			gt = 0;
-			bt = c;
+			*r = (int) x + m;
+			*g = (int) m;
+			*b = (int) c + m;
 			break;
 		case 6: //if(300 <= h && h < 360)
-			rt = c;
-			gt = 0;
-			bt = x;
+			*r = (int) c + m;
+			*g = (int) m;
+			*b = (int) x + m;
 			break;
-
 	}
 
-	*r = (rt+m)*255;
-	*g = (gt+m)*255;
-	*b = (bt+m)*255;
+	*r = (int)(rt+m)*255;
+	*g = (int)(gt+m)*255;
+	*b = (int)(bt+m)*255;
 }*/
 
-
+/*https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both*/
 void hsv2rgb(int h, int s, int v, int* r, int* g, int* b){
 
     int rr,gg,bb;
     unsigned char region, remainder, p, q, t;
 
-	h = h *256 / 360;
+	h = h *255 / 359;
 
 	//printf("%d %d %d\n", h, s , v);
     if (s == 0)

@@ -10,9 +10,9 @@
 #include <GL/glut.h>
 #endif
 
-//8 Points for representaing a rectangular space
+//8 Points to represent a rectangular space
 #define NB_SUBSET_POINT 8
-//4 Points to represente a cut plan
+//4 Points to represent a cut plan
 #define CUT_POINTS_SIZE 4
 //Numbers of axes
 #define AXES_NB 3
@@ -54,16 +54,10 @@ typedef struct compressedImage CompressedImage;
 struct point{
 
 	short _x;
-	short _y;
-	short _z;
+	GLubyte _y;
+	GLubyte _z;
 };
 typedef struct point Point;
-
-
-struct subset{
-	Point _coordinates[NB_SUBSET_POINT];
-};
-typedef struct subset Subset;
 
 
 struct cut{
@@ -71,6 +65,13 @@ struct cut{
 	Point _coordinates[CUT_POINTS_SIZE];
 };
 typedef struct cut Cut;
+
+
+struct subset{
+	Point _coordinates[NB_SUBSET_POINT];
+};
+typedef struct subset Subset;
+
 
 struct cloud{
 
@@ -148,7 +149,7 @@ void printSubset(int nbTabulation, Subset * s);
 
 Cut newCutFromPoints(Point a, Point b, Point c, Point d);
 
-Cut getCutFromSubset(Subset * sub, int cutAxe);
+Cut getCutFromSubset(Subset * sub, int cutAxe, int pourcentage);
 
 void printCut(int indentation, Cut * c);
 
