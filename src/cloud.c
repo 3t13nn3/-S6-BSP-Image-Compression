@@ -145,51 +145,51 @@ void hsv2rgb(int h, double s, double v, int* r, int* g, int* b){
 /*https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both*/
 void hsv2rgb(int h, int s, int v, int* r, int* g, int* b){
 
-    int rr,gg,bb;
-    unsigned char region, remainder, p, q, t;
+	int rr,gg,bb;
+	unsigned char region, remainder, p, q, t;
 
 	h = h *255 / 359;
 
 	//printf("%d %d %d\n", h, s , v);
-    if (s == 0)
-    {
-        rr = v;
-        gg = v;
-        bb = v;
+	if (s == 0)
+	{
+		rr = v;
+		gg = v;
+		bb = v;
 		*r = rr;
 		*g = gg;
 		*b = bb;
-        return;
-    }
+		return;
+	}
 
-    region = h / 43;
-    remainder = (h - (region * 43)) * 6; 
+	region = h / 43;
+	remainder = (h - (region * 43)) * 6; 
 
-    p = (v * (255 - s)) >> 8;
-    q = (v * (255 - ((s * remainder) >> 8))) >> 8;
-    t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
+	p = (v * (255 - s)) >> 8;
+	q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+	t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 
-    switch (region)
-    {
-        case 0:
-            rr = v; gg = t; bb = p;
-            break;
-        case 1:
-            rr = q; gg = v; bb = p;
-            break;
-        case 2:
-            rr = p; gg = v; bb = t;
-            break;
-        case 3:
-            rr = p; gg = q; bb = v;
-            break;
-        case 4:
-            rr = t; gg = p; bb = v;
-            break;
-        default:
-            rr = v; gg = p; bb = q;
-            break;
-    }
+	switch (region)
+	{
+		case 0:
+			rr = v; gg = t; bb = p;
+			break;
+		case 1:
+			rr = q; gg = v; bb = p;
+			break;
+		case 2:
+			rr = p; gg = v; bb = t;
+			break;
+		case 3:
+		rr = p; gg = q; bb = v;
+			break;
+		case 4:
+			rr = t; gg = p; bb = v;
+			break;
+		default:
+			rr = v; gg = p; bb = q;
+			break;
+	}
 
 	//printf("%d %d %d \n", rr, gg ,bb);
 	*r = rr;
@@ -245,7 +245,7 @@ CompressedImage newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * r
 
 		new.data[(int)i/3] = getIndexFromData(CLUTData, root);
 	}
-    free(CLUTData);
+	free(CLUTData);
 
 	return new;
 }
