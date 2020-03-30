@@ -1,5 +1,34 @@
 #include "head.h"
 
+void decimalToBinary(int number, char ** binaryNumber){
+
+    int i, j;
+
+    for (i = treeDepth - 1; i >= 0; i--){
+
+        j = number >> i;
+
+        if (j & 1) {
+
+            (*binaryNumber)[i] = 1;
+        } else {
+
+            (*binaryNumber)[i] = 0;
+        }
+    }
+}
+
+int binaryToDecimal(char ** binary){
+
+    int i, toReturn = 0;
+    for(i = treeDepth - 1; i >= 0; i--){
+
+        toReturn = toReturn << 1 | (*binary)[i];
+
+    }
+    return toReturn;
+}
+
 void compressToBSP(char *filename, CompressedImage *img, CLUTNode* root){
 
 	FILE *fp;
@@ -10,29 +39,62 @@ void compressToBSP(char *filename, CompressedImage *img, CLUTNode* root){
 	 exit(1);
 	}
 
-    usedType nbSubset = getCLUTSize(root);
-    //printf("%d\n", nbSubset);
+    int nbColor = getCLUTSize(root);
+    int cpt = 0;
+    char type;
 
-    //writing the number of subset
-    fwrite(&nbSubset, (size_t) 1, sizeof(usedType), fp);
+    if(treeDepth <= 8){
+        type = 0;
+    } else {
+        type = 1;
+    }
 
-	//image size
+    fwrite(&type, (size_t) 1, sizeof(char), fp);
+
+    if(treeDepth <= 8){
+        //writing the number of subset of GLubyte
+        GLubyte nbSubset = (GLubyte)getCLUTSize(root);
+        fwrite(&nbSubset, (size_t) 1, sizeof(GLubyte), fp);
+    } else {
+        //writing the number of subset as ushort
+        unsigned short nbSubset = (unsigned short)getCLUTSize(root);
+        fwrite(&nbSubset, (size_t) 1, sizeof(unsigned short), fp);
+    }
+
+    //image size
     fwrite(&img->sizeX, (size_t) 1, sizeof(unsigned long), fp);
     fwrite(&img->sizeY, (size_t) 1, sizeof(unsigned long), fp);
 
-	// clut
-	CLUTfileWriter(fp, root->_child);
+    // clut
+    CLUTfileWriter(fp, root->_child, type);
 
-	// pixel data
-	int cpt = img->sizeY - 1;
 
-	while(cpt >= 0){
-        fwrite(&img->data[cpt * img->sizeX], (size_t) 1, (size_t) (img->sizeX)*(sizeof(usedType)), fp);
-        //printf("%d\n", (img->data[cpt * img->sizeX]));
-        --cpt;
-	}
-    
-    
+    char * binary= (char*)malloc(treeDepth * sizeof(char));
+
+    // pixel data
+    while(cpt < (int)(img->sizeY * img->sizeX)){
+
+        unsigned long int dataToWrite = 0x00;
+        
+        for(int i = 0; i < (int)(floor(64/treeDepth)); ++i){
+
+            decimalToBinary(img->data[cpt], &binary);
+
+            for(int j = treeDepth - 1; j>=0; --j){
+
+                if(binary[j] == 1){
+                    dataToWrite |= 1UL << ((i * treeDepth) + j);
+                }
+            }
+            ++cpt;
+        }
+
+        fwrite(&dataToWrite, (size_t) 1, (size_t)(sizeof(unsigned long int)), fp);
+        
+    }
+
+    free(binary);
+  
 	fclose(fp);
 }
 
@@ -41,17 +103,14 @@ Image loadCompressedBSP(char *filename){
     Image toReturn;
 
     FILE *fp;
-    unsigned long bb;
-    int c, size, sizex;
-    GLubyte tmp, * ptrdeb, *ptrfin, *lastline;
+    int size;
 
     int i;
     int cpt = 0;
     GLubyte* r;
     GLubyte* g;
     GLubyte* b;
-    usedType index;
-    usedType nbSubset;
+    char type;
 
     //open PPM file for reading
     fp = fopen(filename, "rb");
@@ -60,70 +119,128 @@ Image loadCompressedBSP(char *filename){
         exit(1);
     }
 
-    fread(&nbSubset, sizeof(usedType), 1, fp);
-    //printf("%dok\n", nbSubset);
+    fread(&type, sizeof(char), 1, fp);
 
-    fread(&toReturn.sizeX, sizeof(unsigned long), 1, fp);
-    fread(&toReturn.sizeY, sizeof(unsigned long), 1, fp);
-    //printf("%lu %lu\n", toReturn.sizeX, toReturn.sizeY);
+    if(type == 0){ // using GLubyte for indexs
 
-    r = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
-    g = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
-    b = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+        GLubyte index;
+        GLubyte nbSubset;
 
-    while (cpt < nbSubset){
+        fread(&nbSubset, sizeof(GLubyte), 1, fp);
 
-        GLubyte aa,bb,cc;
+        fread(&toReturn.sizeX, sizeof(unsigned long), 1, fp);
+        fread(&toReturn.sizeY, sizeof(unsigned long), 1, fp);
+        //printf("%lu %lu\n", toReturn.sizeX, toReturn.sizeY);
 
-        fread(&index, sizeof(usedType), 1, fp);
-        fread(&aa, sizeof(GLubyte), 1, fp);
-        fread(&bb, sizeof(GLubyte), 1, fp);
-        fread(&cc, sizeof(GLubyte), 1, fp);
-        r[(int)index]=aa;
-        g[(int)index]=bb;
-        b[(int)index]=cc;
-        //printf("%d %d %d %d\n", index, r[(int)index], g[(int)index], b[(int)index]);
-        cpt++;
-    }
+        r = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+        g = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+        b = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+
+        while (cpt < nbSubset){
+
+            GLubyte aa,bb,cc;
+
+            fread(&index, sizeof(GLubyte), 1, fp);
+            fread(&aa, sizeof(GLubyte), 1, fp);
+            fread(&bb, sizeof(GLubyte), 1, fp);
+            fread(&cc, sizeof(GLubyte), 1, fp);
+            r[(int)index]=aa;
+            g[(int)index]=bb;
+            b[(int)index]=cc;
+
+            cpt++;
+        }
+
+        /* allocation memoire */
+        size = toReturn.sizeX * toReturn.sizeY * 3;
+
+        toReturn.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
+        assert(toReturn.data);
+        //read pixel data from file
+        char * binary= (char*)malloc(treeDepth * sizeof(char));
+        unsigned long int binarysData;
+        
+
+        i = 0;
+        while ( i < (int)(toReturn.sizeX * toReturn.sizeY)){
+
+            fread(&binarysData, sizeof(unsigned long int), 1, fp);
+            
+            for(int j = 0; j < (int)(floor(64/treeDepth)); ++j){
+                for(int k = treeDepth - 1; k>=0; --k){
+
+                    binary[k] = (char)(binarysData >> ((j * treeDepth) + k)) & 0x01;
+                }
+                index = (GLubyte)binaryToDecimal(&binary);
+
+                toReturn.data[(int)i*3] = r[index];
+                toReturn.data[(int)(i*3)+1] = g[index];
+                toReturn.data[(int)(i*3)+2] = b[index];
+
+                i++;
+            }
+        }
+    } else { //using ushort for indexs
     
+        unsigned short index;
+        unsigned short nbSubset;
 
-	/* allocation memoire */
-	size = toReturn.sizeX * toReturn.sizeY * 3;
-	//printf("Size image %lu %lu => %d\n", toReturn.sizeX, toReturn.sizeY, size);
-	toReturn.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
-	assert(toReturn.data);
-    
+        fread(&nbSubset, sizeof(unsigned short), 1, fp);
 
-    //read pixel data from file
-    for(i = 0; i < (int)(toReturn.sizeX * toReturn.sizeY); i ++){
-        //lit mal ici
-        fread(&index, sizeof(usedType), 1, fp);
-        //printf("%d\n", (int)index);
-        toReturn.data[i*3] = r[index];
-        toReturn.data[(i*3)+1] = g[index];
-        toReturn.data[(i*3)+2] = b[index];
+        fread(&toReturn.sizeX, sizeof(unsigned long), 1, fp);
+        fread(&toReturn.sizeY, sizeof(unsigned long), 1, fp);
+        //printf("%lu %lu\n", toReturn.sizeX, toReturn.sizeY);
+
+        r = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+        g = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+        b = (GLubyte*)malloc((size_t) nbSubset * sizeof(GLubyte));
+
+        while (cpt < nbSubset){
+
+            GLubyte aa,bb,cc;
+
+            fread(&index, sizeof(unsigned short), 1, fp);
+            fread(&aa, sizeof(GLubyte), 1, fp);
+            fread(&bb, sizeof(GLubyte), 1, fp);
+            fread(&cc, sizeof(GLubyte), 1, fp);
+            r[(int)index]=aa;
+            g[(int)index]=bb;
+            b[(int)index]=cc;
+
+            cpt++;
+        }
+        
+        /* allocation memoire */
+        size = toReturn.sizeX * toReturn.sizeY * 3;
+
+        toReturn.data = (GLubyte *) malloc ((size_t) size * sizeof (GLubyte));
+        assert(toReturn.data);
+        
+        char * binary= (char*)malloc(treeDepth * sizeof(char));
+        unsigned long int binarysData;
+        
+
+        i = 0;
+        while ( i < (int)(toReturn.sizeX * toReturn.sizeY)){
+
+            fread(&binarysData, sizeof(unsigned long int), 1, fp);
+            
+            for(int j = 0; j < (int)(floor(64/treeDepth)); ++j){
+                for(int k = treeDepth - 1; k>=0; --k){
+
+                    binary[k] = (char)(binarysData >> ((j * treeDepth) + k)) & 0x01;
+                }
+                index = (unsigned short)binaryToDecimal(&binary);
+
+                toReturn.data[(int)i*3] = r[index];
+                toReturn.data[(int)(i*3)+1] = g[index];
+                toReturn.data[(int)(i*3)+2] = b[index];
+
+                i++;
+            }
+        }
     }
-    /*if (fread(toReturn.data, (size_t) 1, (size_t) size, fp) == 0) {
-         fprintf(stderr, "Error loading image '%s'\n", filename);
-         exit(1);
-    }*/
 
-	/* remettre l image dans le bon sens */
-	sizex = toReturn.sizeX;
-	//sizey = toReturn.sizeY;
-	lastline = toReturn.data + size - sizex * 3;
-	for (bb = 0; bb < toReturn.sizeY / 2; bb++) {
-	  ptrdeb = toReturn.data + bb * sizex * 3;
-	  ptrfin = lastline - (bb * sizex * 3);
-	//	printf("%d => %ld %ld\n", b, (int) ptrdeb, (int) ptrfin);
-	  for (c = 0; c < 3 * sizex; c++) {
-		  tmp = *ptrdeb;
-		  *ptrdeb = *ptrfin;
-		  *ptrfin = tmp;
-		  ptrfin++;
-		  ptrdeb++;
-	  }		
-	}
     fclose(fp);
 
     return toReturn;

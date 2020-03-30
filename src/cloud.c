@@ -244,7 +244,6 @@ CompressedImage newCompressedImageFromCloud(Cloud * c, Image * img, CLUTNode * r
 		
 
 		new.data[(int)i/3] = getIndexFromData(CLUTData, root);
-		
 	}
     free(CLUTData);
 

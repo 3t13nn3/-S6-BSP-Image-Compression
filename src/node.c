@@ -58,10 +58,7 @@ void freeAllChildren(Node* n){
 	free(n);
 }
 
-/*
-**Test function, care, cpt argument make 2^(cpt+1) leaves
-**So we need to call the function with cpt - 1 to get the real depth
-*/
+
 void createTree(Node * n, int cpt, Cut cut, int actualCutAxe) {
 
 	if(cpt <= 0){
@@ -128,6 +125,7 @@ void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 
 		/*Calculus for the average of all components of the subset*/
 		int i, j, k;
+		int r, g, b;
 		long long int hAverage = 0, sAverage = 0, vAverage = 0;
 		long long int nbIterations = ((tree->_subset._coordinates[7]._x - tree->_subset._coordinates[0]._x) 
 		                            * (tree->_subset._coordinates[7]._y - tree->_subset._coordinates[0]._y)
@@ -135,49 +133,47 @@ void modifyCloudFromTree(Cloud * c, CLUTNode * CLUT, Node * tree){
 
 		GLubyte* CLUTData = (GLubyte*)malloc((size_t) 3 * sizeof(GLubyte));
 	
-		if(nbIterations > 0 ){
-			for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
+		for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
 
-				for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
+			for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
 
-					for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
+				for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
 
-						hAverage+= i;
-						sAverage+= j;
-						vAverage+= k;	
-					}
+					hAverage+= i;
+					sAverage+= j;
+					vAverage+= k;	
 				}
 			}
-
-			hAverage/=nbIterations;
-			sAverage/=nbIterations;
-			vAverage/=nbIterations;
-
-
-			/*Assignation of the subset average component for every components of the subset*/
-			for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
-
-				for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
-
-					for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
-
-							c->_data[i][j][k][0] = (short)hAverage;
-							c->_data[i][j][k][1] = (short)sAverage;
-							c->_data[i][j][k][2] = (short)vAverage;
-					}
-				}
-			}
-
-			int r, g,b;
-			hsv2rgb(hAverage, sAverage, vAverage, &r, &g, &b);
-			/*ADDING COLOR TO OUR CLUT*/
-			CLUTData[0] = (GLubyte)r;
-			CLUTData[1] = (GLubyte)g;
-			CLUTData[2] = (GLubyte)b;
-
-			addCLUTNodeChild(CLUTData, CLUT);
-
-			free(CLUTData);
 		}
+
+		hAverage/=nbIterations;
+		sAverage/=nbIterations;
+		vAverage/=nbIterations;
+
+
+		/*Assignation of the subset average component for every components of the subset*/
+		for(i = tree->_subset._coordinates[0]._x; i < tree->_subset._coordinates[7]._x; ++i){
+
+			for(j = tree->_subset._coordinates[0]._y; j < tree->_subset._coordinates[7]._y; ++j){
+
+				for(k = tree->_subset._coordinates[0]._z; k < tree->_subset._coordinates[7]._z; ++k){
+
+						c->_data[i][j][k][0] = (short)hAverage;
+						c->_data[i][j][k][1] = (short)sAverage;
+						c->_data[i][j][k][2] = (short)vAverage;
+				}
+			}
+		}
+
+		hsv2rgb(hAverage, sAverage, vAverage, &r, &g, &b);
+		/*ADDING COLOR TO OUR CLUT*/
+		CLUTData[0] = (GLubyte)r;
+		CLUTData[1] = (GLubyte)g;
+		CLUTData[2] = (GLubyte)b;
+
+		addCLUTNodeChild(CLUTData, CLUT);
+
+		free(CLUTData);
+		
 	}
 }

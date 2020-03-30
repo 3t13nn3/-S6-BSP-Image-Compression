@@ -2,8 +2,8 @@
 
 int main(int argc, char **argv) {
 
-	if (argc<3) {
-		fprintf(stderr, "Usage : ./bsp myImage.ppm treeDepth\n");
+	if (argc<5) {
+		fprintf(stderr, "Usage : ./bsp myImage.ppm treeDepth firstCutAxe Proportion\n");
 		exit(0);
 	}
 	else if((1 << atoi(argv[2])) > (int)(1 << (8 * sizeof(usedType)))){ //checking if we can stock the number of subset
@@ -14,24 +14,42 @@ int main(int argc, char **argv) {
 
 	treeDepth = atoi(argv[2]);
 
-	initWindow(argc, argv);
-	Subset sub = newSubsetFromDimensions(H,S,V);
-	Cut myc = getCutFromSubset(&sub, X_AXE, 50);
-	root = newNode(sub);
+	int firstCutAxe = atoi(argv[3]);
+	int proportion = atoi(argv[4]);
 
-	createTree(root, treeDepth, myc, X_AXE);
+	initWindow(argc, argv);
 	
-	CLUT = newEmptyCLUTNode();
-	//printCloud(&myCloud);
-	//printAllChildren(0,root);
 
 	Init(argv[1]);
 
-	modifyCloudFromTree(&myCloud, CLUT, root);
+#ifdef TIME
+
+	clock_t start_t, end_t;
+	double total_t;
+	start_t = clock();
+
+#endif
+
+	Subset sub = newSubsetFromDimensions(H,S,V);
+	Cut myc = getCutFromSubset(&sub, firstCutAxe, proportion);
+	root = newNode(sub);
+
+	createTree(root, treeDepth, myc, firstCutAxe);
 	
-	new = newImageFromCloud(&myCloud, image);
+	CLUT = newEmptyCLUTNode();
+	modifyCloudFromTree(&myCloud, CLUT, root);
+
 	compressed = newCompressedImageFromCloud(&myCloud, image, CLUT);
-	printAllCLUTChildren(CLUT->_child);
+
+#ifdef TIME
+
+	end_t = clock();
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+	printf("%f sec\n", total_t);
+
+#endif
+
+	new = newImageFromCloud(&myCloud, image);
 
 	startGraphicalLoop();
 

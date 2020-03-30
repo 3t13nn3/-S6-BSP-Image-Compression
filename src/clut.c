@@ -41,7 +41,6 @@ void addCLUTNodeChild(GLubyte* data, CLUTNode* father){
     setCLUTNode(data, father->_index + 1, n);
 
     father->_child = n;
-    //printf("%d\n",father->_index);
 }
 
 usedType getIndexFromData(GLubyte* data, CLUTNode* father){
@@ -83,28 +82,32 @@ void printAllCLUTChildren(CLUTNode* n){
 	}
 }
 
-void CLUTfileWriter(FILE *fp, CLUTNode* n){
+void CLUTfileWriter(FILE *fp, CLUTNode* n, char type){
 
 	if(n->_child != NULL){
 
-		CLUTfileWriter(fp, n->_child);
+		CLUTfileWriter(fp, n->_child, type);
 	}
 
     GLubyte r, g, b;
-    usedType index;
-    
-    index = n->_index;
     r = n->_data[0];
     g = n->_data[1];
     b = n->_data[2];
 
-    //writing GLubyte instead of int into our file
-    //printf("%d %d %d %d\n", n->_index, n->_data[0],n->_data[1],n->_data[2]);
-   // printf("%d %d %d %d\n", index, rTmp, gTmp, bTmp);
+    if(type == 0){ //GLubyte
 
-    fwrite(&index, (size_t) 1, sizeof(usedType), fp);
+        GLubyte index;
+        index = (GLubyte)n->_index;
+
+        fwrite(&index, (size_t) 1, sizeof(GLubyte), fp);
+    } else { //ushort
+
+        unsigned short index;
+        index = (unsigned short)n->_index;
+
+        fwrite(&index, (size_t) 1, sizeof(unsigned short), fp);
+    }
     fwrite(&r, (size_t) 1, sizeof(GLubyte), fp);
     fwrite(&g, (size_t) 1, sizeof(GLubyte), fp);
     fwrite(&b, (size_t) 1, sizeof(GLubyte), fp);
-    //fprintf(fp,"%hhd %hhd %hhd %hhd ", index, r, g, b);
 }
